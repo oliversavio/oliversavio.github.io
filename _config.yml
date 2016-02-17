@@ -9,7 +9,7 @@
 title: Oliver's Tech Blog
 email: oliver.savio@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-  This is where I plan on posting all the new and interesting things I learn.
+  Trying to change the world one line of code at a time.
 #baseurl: "" # the subpath of your site, e.g. /blog
 #url: "oliver.savio@gmail.com" # the base hostname & protocol for your site
 #twitter_username: jekyllrb
