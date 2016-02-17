@@ -18,7 +18,7 @@ __Breakdown:__
 4. __Calculating the Quantile values.__
 5. Generating the Scatter Plot.
 
-In this post I will leave out the details related to point number 1 and 4 and will concentrate on the remaining points. 
+In this post I will leave out the details related to point number 1 and 5 and will concentrate on the remaining points. 
 Since this was a fairly mundane task and had to be done daily for a couple of weeks, I intended on automating the process as well as generating the scatter plot as quickly as possible. 
 
 ### Parsing the timestamp fields so that the graph can be scaled appropriately
