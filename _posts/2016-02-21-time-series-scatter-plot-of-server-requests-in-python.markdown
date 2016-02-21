@@ -94,6 +94,8 @@ _Note: The `Matplotlib` library contains extensive documentation on all it's API
 _The snippet below contains code related to rendering the Scatter Plot. I have taken a very simplistic and naive approach since it was good enough for my requirement._ 
 
 {% highlight python %}
+import matplotlib.pyplot as plt
+
 total_req =  'Total request: ' + str(count)
 nine_five_quant_str =  '95th Quantile: ' + str(ninety_five_quant)
 nine_eight_quant_str =  '98th Quantile: ' + str(ninety_eight_quant)
