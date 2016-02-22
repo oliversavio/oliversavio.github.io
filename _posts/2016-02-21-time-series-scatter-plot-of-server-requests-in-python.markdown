@@ -3,6 +3,7 @@ layout: post
 title:  "Time-Series Scatter Plot of Server Requests using Python"
 date:   2016-02-15 23:25:52 +0530
 categories: python
+comments: true
 ---
 In this post I will attempt to explain how I used [`Pandas`][Pandas] and [`Matplotlib`][Matplotlib] to quickly generate server requests reports on a daily basis. 
 
