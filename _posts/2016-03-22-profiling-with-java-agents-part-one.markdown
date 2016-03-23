@@ -16,7 +16,7 @@ Where `jarpath` is the path to the JAR file.
 
 A Java agent JAR file must conform to the following conventions:
 
-1. The manifest of the JAR must contain the `Premain-Class` attribute, it's value is the name of agent class.
+1. The manifest of the JAR must contain the `Premain-Class` attribute, it's value is the name of the agent class.
 2. The agent class must implement one of the two following methods
 - `public static void premain(String agentArgs, Instrumentation inst);`
 - `public static void premain(String agentArgs);`
@@ -100,7 +100,7 @@ Hello World! App
 {% endhighlight %}
 
 ### Conclusion and Next Steps
-In this post we have seen how to create simple Java Agent. Our agent however doesn't really do much, in the next post we will take a look at the `java.lang.instrument` package and `javaassist` which will enable us to manipulate byte-code and profile our Java program.
+In this post we have seen how to create a simple Java Agent. Our agent however doesn't really do much, in the next post we will take a look at the `java.lang.instrument` package and `javaassist` which will enable us to manipulate byte-code and profile our Java program.
 
 
 ### References
