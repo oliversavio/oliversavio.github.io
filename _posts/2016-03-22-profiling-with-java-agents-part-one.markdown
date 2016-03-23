@@ -16,14 +16,14 @@ Where `jarpath` is the path to the JAR file.
 
 A Java agent JAR file must conform to the following conventions:
 
-1. The manifest of the JAR must contain the `Premain-Class` attribute, it's value is the name of the agent class.
+1. The manifest of the JAR must contain the `Premain-Class` attribute, its value is the name of the agent class.
 2. The agent class must implement one of the two following methods
 - `public static void premain(String agentArgs, Instrumentation inst);`
 - `public static void premain(String agentArgs);`
 
 The `premain` method serves as an entry point for the Java agent the same way `main` servers as an entry point to regular Java class.
 
-_Note: A Java agent class may also contain a `agentmain` method which is invoked when an agent is attached to an already running VM._
+_Note: A Java agent class may also contain an `agentmain` method which is invoked when an agent is attached to an already running VM._
 
 ### "Hello World" Java Agent
 Let's use the conventions mentioned above to create a simple "Hello World" implementation.
@@ -86,7 +86,7 @@ public class App
 
 _Note: For the purposes of this example we are using a test class in the same package as the Agent class, however this will work with any class._
 
-Now run a `maven install` to create the agent JAR. Here is an screenshot of the disassembled JAR.
+Now run a `maven install` to create the agent JAR. Here is a screenshot of the disassembled JAR.
 
 ![DataFrame Image]({{ site.url }}/images/jar-screenshot.png)
 
