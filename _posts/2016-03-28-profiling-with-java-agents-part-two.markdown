@@ -3,7 +3,7 @@ layout: post
 title:  "Profiling with Java Agents - Part 2"
 date:   2016-03-28 12:00:00 +0530
 categories: java
-comments: false
+comments: true
 ---
 In-case you haven't read Part 1, you can find it [here][Part1].
 
@@ -216,13 +216,12 @@ Similar to Part 1, `<manifestFile>` contains the path to our custom manifest fil
 {% highlight java %}
 Manifest-Version: 1.0
 Premain-Class: com.oliver.jagent.Agent
-Agent-Class: com.oliver.jagent.Agent
 {% endhighlight %}
 
 The agent is run in exactly the same way as described in [Part 1][Part1].
 
 ### Conclusion
-We have created a basic java profiler which gives us insights into the inner working of applications and have run the profiler as a java agent.
+We have created a basic java profiler which gives us insights into the inner workings of applications and have run the profiler as a java agent.
  
 
 ### References
