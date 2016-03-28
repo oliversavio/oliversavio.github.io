@@ -8,7 +8,7 @@ comments: false
 In-case you haven't read Part 1, you can find it [here][Part1].
 
 ### Introduction
-Let's look at the Java Pyramid program we will be profiling, we will assume we do not have access to the source code. The program gives us the following output.
+Let's look at the Java Pyramid program we will be profiling. We will assume we do not have access to the source code. The program gives us the following output.
 {% highlight text %}
    1
   1 1
@@ -30,18 +30,18 @@ Let's look at the Java Pyramid program we will be profiling, we will assume we d
 On running our profiler with the Java Pyramid program we get the following metrics
 {% highlight text %}
 ========= Method Count Metrics =========
-com.oliver.printpyramid.PrinPyramid.printPyramid-->3
-com.oliver.printpyramid.PrinPyramid.main-->1
-com.oliver.printpyramid.PrinPyramid.getLine-->15
+com.oliver.printpyramid.PrintPyramid.printPyramid-->3
+com.oliver.printpyramid.PrintPyramid.main-->1
+com.oliver.printpyramid.PrintPyramid.getLine-->15
 ========= End Method Count Metrics =========
 {% endhighlight %}
 Now we have some insight into which methods are being called by the Pyramid program. 
 
 
-This basic idea can be extended to record other metrics like method execution time, the results of which can be used as a starting point when hunting down performance bottlenecks.
+This basic idea can be extended to record other metrics like method execution time, the results of which can be used to ease out performance bottlenecks.
 
 #### Motivation
-Java development tools like [__JRebel__][JRebel] and [__XRebel__][XRebel] as well as Application Monitoring tools like [__New Relic APM__][New-Relic] are built upon similar albeit much more complicated concepts of Java agents and byte-code instrumentation.
+Java development tools like [__JRebel__][JRebel] and [__XRebel__][XRebel] as well as Application Monitoring tools like [__New Relic APM__][New-Relic] are built upon similar albeit more complicated concepts of Java agents and byte-code instrumentation.
 
 ### Let's Begin
 In sections below will look at:
@@ -76,7 +76,7 @@ A `CtMethod` object is an abstraction of a method in a `class`. Once we obtain t
 _Note: For a more complete and detailed explanation on Javassist please see references 2 and 3._
 
 ### The Metrics Collector Interface
-Create a new maven project, here is the `MetricsCollector` interface which will be instrumented into the Java Pyramid program. The implementation of this interface is pretty straightforward, you should be able to follow along with just the javadoc comments.
+Here is the `MetricsCollector` interface which will be instrumented into the Java Pyramid program. The implementation of this interface is pretty straightforward and can be followed through with just the javadoc comments.
 {% highlight java %}
 package com.oliver.jagent.mectrics;
 
@@ -115,7 +115,7 @@ public interface MetricsCollector {
 -  `printMetrics()` will be invoked by our agent code on shut-down and will print out the metrics.
 
 ### Registering a custom Class File Transformer
-In the first post we implemented the `premain` method and displayed a "Hello World! Java Agent" message. In order to modify byte-code we need to write and register a custom `ClassFileTransformer`. This is done by using the `addTransformer` method of the `java.lang.instrument.Instrumentation` interface. 
+In the [first post][Part1] we implemented the `premain` method and displayed a "Hello World! Java Agent" message. In order to modify byte-code we need to write and register a custom `ClassFileTransformer`. This is done by using the `addTransformer` method of the `java.lang.instrument.Instrumentation` interface. 
 
 {% highlight java %}
 package com.oliver.jagent;
@@ -128,7 +128,7 @@ public static void premain(String agentArgs, Instrumentation inst){
 {% endhighlight %}
 
 ### Implementing MyClassTransformer
-The `MyClassTransformer` class implements the `ClassFileTransformer` interface and the `transform` method. We have initialized a `ClassPool` with the default class pool, this is fine when running a simple application like the Java Pyramid program in this example, for web application servers like Tomcat and JBoss which use multiple class loaders, creating multiple instances of `ClassPool` might be necessary; an instance of `ClassPool` should be created for each class loader. You may find mode details on this [here][javassist-tutorial].
+The `MyClassTransformer` class implements the `ClassFileTransformer` interface and the `transform` method. We have initialized a `ClassPool` with the default class pool, this is fine when running a simple application like the Java Pyramid program in this example. However for applications running on web application servers like Tomcat and JBoss which use multiple class loaders, creating multiple instances of `ClassPool` might be necessary; an instance of `ClassPool` should be created for each class loader. You may find mode details on this [here][javassist-tutorial].
 {% highlight java %}
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
