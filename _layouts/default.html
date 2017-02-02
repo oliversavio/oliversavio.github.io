@@ -12,6 +12,17 @@
         {{ content }}
 
         {% include disqus.html %}
+
+        <h2>More Posts</h2>
+          <ul>
+          {% for post in site.posts %}
+            <div class="post m12">
+              <a href="{{ post.url }}" class="post-link">
+              <h4 clas="post-title">{{ post.title }}</h4>
+              </a>
+            </div>
+          {% endfor %}
+          </ul>
       </div>
     </div>
 
