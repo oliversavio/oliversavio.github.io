@@ -2,7 +2,7 @@
 layout: post
 title:  "Detecting sensor failure using the MQTT protocol, an IoT Proof of Concept"
 date:   2017-06-02 12:00:00 +0530
-categories: iot, arduino
+categories: iot arduino
 comments: false
 ---
 
