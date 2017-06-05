@@ -7,7 +7,7 @@ comments: false
 ---
 
 ## Motivation
-IoT technology is beginning to witness wide scale adoption in the consumer as well as industrial environments. In a typical enterprise scenario, you may have a large number of inexpensive sensor nodes interacting with machinery and sending data to Gateway nodes. These Gateway nodes are responsible for aggregating sensor data before sending it to the back-end systems why may reside somewhere in the cloud. Detecting a failure in one or more of these inexpensive sensor nodes is critical in preempting catastrophic failures.
+IoT technology is beginning to witness wide scale adoption in the consumer as well as industrial environments. In a typical enterprise scenario, you may have a large number of inexpensive sensor nodes interacting with machinery and sending data to Gateway nodes. These Gateway nodes are responsible for aggregating sensor data before sending it to the back-end systems why may reside in the cloud. Detecting a failure in one or more of these inexpensive sensor nodes is critical in preempting catastrophic failures.
 
 ![Sensor Nodes with Gateways]({{ site.url }}/images/Node_Gateway.png)
 
@@ -21,7 +21,7 @@ In the sections below, we will look at:
 3. MQTT on the Arduino.
 4. A simple Java client.
 
-## 1) What as MQTT?
+## 1) What is MQTT?
 The FAQ page at mqtt.org provides an apt answer.
 
 _"MQTT stands for MQ Telemetry Transport. It is a publish/subscribe, extremely simple and lightweight messaging protocol, designed for constrained devices and low-bandwidth, high-latency or unreliable networks. The design principles are to minimise network bandwidth and device resource requirements whilst also attempting to ensure reliability and some degree of assurance of delivery. These principles also turn out to make the protocol ideal of the emerging “machine-to-machine” (M2M) or “Internet of Things” world of connected devices, and for mobile applications where bandwidth and battery power are at a premium."_
@@ -29,11 +29,11 @@ _"MQTT stands for MQ Telemetry Transport. It is a publish/subscribe, extremely s
 In short, MQTT is a messaging protocol that's light weight, reliable and easy to implement. It was invented by IBM in 1999.
 
 ## 2) Essential MQTT Concepts
-MQTT works over TCP/IP and uses a standard port 1883. An MQTT connection is always established between a client and a broker, no client can connect directly to another client.
+MQTT works over TCP/IP and uses a standard port 1883. An MQTT connection is always established between a client and a broker. No client can connect directly to another client.
 
 #### Client
 
-Any device, from a small micro controller to a full fledge server, which is capable of running a MQTT library and can connect to a MQTT Broker, is considered a MQTT client. MQTT clients may be publishers or subscribers or both.
+Any device from a small micro controller to a full fledge server, which is capable of running a MQTT library and can connect to a MQTT Broker, is considered a MQTT client. MQTT clients may be publishers or subscribers or both.
 
 ___In this PoC, the Arduino will be the publishing client and a Java program will act as a subscribing client.___
 
@@ -50,11 +50,11 @@ MQTT is a reliable protocol and provides a QoS level agreement between the sende
 - QoS 1 (At least once)
 - QoS 2 (Exactly once)
 
-__QoS 0__ is often known as fire and forget, messages aren't acknowledged by the received nor stored by the sender for redelivery.
+__QoS 0__ is often known as fire and forget, messages aren't acknowledged by the receiver nor stored by the sender for redelivery.
 
-__QoS 1__ guarantees that each message will be delivered to the receiver, however the message may also be delivered more than once. Receivers send back an acknowledgment ([PUBACK][PUBACK]) to the sender. Senders will store the message until it gets this acknowledgment. In the case of redelivery, a duplicate flag is set. This flag is ignored by the broker and client in the case of QoS 1.
+__QoS 1__ guarantees that each message will be delivered to the receiver, however the message may also be delivered more than once. Receivers return an acknowledgment ([PUBACK][PUBACK]) to the sender. Senders will store the message until it gets this acknowledgment. In the case of redelivery, a duplicate flag is set. This flag is ignored by the broker and client in the case of QoS 1.
 
-__QoS 2__ guarantees that each messaged will be received only once. Once the received get a QoS 2 message, it sends back a "Publish Received" ([PUBREC][PUBREC]) packet and stores a reference to the packet identifier until it sends a "Publish Complete" ([PUBCOMP][PUBCOMP]) to the sender. This is important so that the message isn't processed more than once. 
+__QoS 2__ guarantees that each message will be received only once. Once the received get a QoS 2 message, it sends back a "Publish Received" ([PUBREC][PUBREC]) packet and stores a reference to the packet identifier until it sends a "Publish Complete" ([PUBCOMP][PUBCOMP]) to the sender. This is important so that the message isn't processed more than once. 
 
 Once the sender gets a PUBREC it can safely discard the initial publish, stores the PUBREC and responds with a "Publish release" ([PUBREL][PUBREL]). Once the receiver gets the PUBREL message, it will discard the stored state and respond with a PUBCOMP.
 
