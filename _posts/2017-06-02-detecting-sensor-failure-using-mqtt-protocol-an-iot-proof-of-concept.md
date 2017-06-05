@@ -7,7 +7,7 @@ comments: false
 ---
 
 ## Motivation
-IoT technology is beginning to witness wide scale adoption in the consumer as well as industrial environments. In a typical enterprise scenario, you may have a large number of inexpensive sensor nodes interacting with machinery and sending data to Gateway nodes. These Gateway nodes are responsible for aggregating sensor data before sending it to the back-end systems why may reside in the cloud. Detecting a failure in one or more of these inexpensive sensor nodes is critical in preempting catastrophic failures.
+IoT technology is beginning to witness wide scale adoption in the consumer as well as industrial environments. In a typical enterprise scenario, you may have a large number of inexpensive sensor nodes interacting with machinery and sending data to Gateway nodes. These Gateway nodes are responsible for aggregating sensor data before sending it to the back-end systems which may reside in the cloud. Detecting a failure in one or more of these inexpensive sensor nodes is critical in preempting catastrophic failures.
 
 ![Sensor Nodes with Gateways]({{ site.url }}/images/Node_Gateway.png)
 
