@@ -3,6 +3,7 @@ layout: post
 title:  "Profiling with Java Agents - Part 1: A Hello World Example"
 date:   2016-03-22 16:00:00 +0530
 categories: java
+description: Profiling with Java Agents
 comments: true
 ---
 The Java Agent technology has been around since JDK 1.5. Here we will build a simple profiler which will instrument our Java program and give us method execution count metrics. The profiler will be run as a Java Agent.

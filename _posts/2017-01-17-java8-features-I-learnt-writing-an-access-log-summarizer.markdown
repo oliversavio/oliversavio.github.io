@@ -3,6 +3,7 @@ layout: post
 title:  "Java 8 features I learnt while writing an access log summarizer"
 date:   2017-01-26 12:00:00 +0530
 categories: java
+description: Java 8 features
 comments: true
 ---
 

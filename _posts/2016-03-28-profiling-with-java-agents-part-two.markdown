@@ -3,6 +3,7 @@ layout: post
 title:  "Profiling with Java Agents - Part 2"
 date:   2016-03-28 12:00:00 +0530
 categories: java
+description: Profiling with Java Agents
 comments: true
 ---
 In-case you haven't read Part 1, you can find it [here][Part1].
