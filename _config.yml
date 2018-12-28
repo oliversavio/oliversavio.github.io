@@ -19,3 +19,4 @@ github_username:  oliversavio
 markdown: kramdown
 
 theme: jekyll-theme-cayman
+remote_theme: pmarsceill/just-the-docs
