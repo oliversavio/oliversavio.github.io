@@ -9,20 +9,20 @@ comments: false
 
 ![AWS EMR Spark Cluster]({{ site.url }}/images/spark.png)
 
-The graphic above depicts a common workflow for running Spark SQL apps, the Hive metastore holds table schemas (this includes the location of the table data), the Spark clusters, AWS EMR clusters in this case are treated as ephemeral, they spin up, run their application(s) and terminate.
+The graphic above depicts a common workflow for running Spark SQL apps. The Hive metastore holds table schemas (this includes the location of the table data), the Spark clusters, AWS EMR clusters in this case are treated as ephemeral, they spin up, run their application(s) and terminate.
 
 This setup enables you to run multiple Spark SQL applications without having to worry about correctly configuring a multi-tenant Hive cluster. 
 
-__Note: All examples are written in Scala 2.11 with Spark SQL 2.3.x, prior experience with Apache Spark is pre-requisite.__
+__Note: All examples are written in Scala 2.11 with Spark SQL 2.3.x. Prior experience with Apache Spark is pre-requisite.__
 
 
-### Topics this post will cover
+### Topics this post will cover:
 - Running Spark SQL with Hive.
 - Connecting to a remote Hive cluster.
 - Connecting to a remote Hive cluster with HA (High Availability) enabled.
 
 ### Running Spark SQL with Hive
-Spark SQL supports the HiveQL syntax as well as Hive SerDes and UDFs, allowing you to access existing Hive warehouses. Connecting to a Hive metastore is straightforward, all you need to do is enable hive support while instantiating the `SparkSession`.
+Spark SQL supports the HiveQL syntax as well as Hive SerDes and UDFs, allowing you to access existing Hive warehouses. Connecting to a Hive metastore is straightforward - all you need to do is enable hive support while instantiating the `SparkSession`.
 
 {% highlight scala %}
 import org.apache.spark.sql.SparkSession
@@ -43,7 +43,7 @@ This assumes that the Spark application is co-located with the Hive installation
 ### Connecting to a remote Hive cluster
 In order to connect to a remote Hive cluster, the `SparkSession` needs to know where the Hive metastore is located. This is done by specifying the `hive.metastore.uris` property.
 
- This property can be found in the `hive-site.xml` file located in the `/conf` directory on the remote Hive cluster, for Horton Data Platform (HDP) and  AWS EMR the location is `/etc/hive/conf/hive-site.xml`. Only a sub-set of the all the properties mentioned in the file are needed.
+ This property can be found in the `hive-site.xml` file located in the `/conf` directory on the remote Hive cluster, for Horton Data Platform (HDP) and  AWS EMR the location is `/etc/hive/conf/hive-site.xml`. Only a sub-set of all the properties mentioned in the file are needed.
 
 Create a file named `hive-site.xml` with the following configuration:
 
@@ -63,9 +63,9 @@ Create a file named `hive-site.xml` with the following configuration:
     </property>
 </configuration>
 {% endhighlight %}
-_Note: `hive.metastore.client.connect.retry.delay` and `hive.metastore.client.socket.timeout` are nice to have properties in a production environment, they aren't mandatory._
+_Note: Although `hive.metastore.client.connect.retry.delay` and `hive.metastore.client.socket.timeout` are nice to have properties in a production environment, they aren't mandatory._
 
-This file needs to passed as a parameter when running the `spark-submit` command as follows:
+This file needs to be passed as a parameter when running the `spark-submit` command as follows:
 {% highlight bash %}
 spark-submit \
 --master yarn \
@@ -79,7 +79,7 @@ spark-submit \
 And that's about it, the code to create the `SparkSession` remains exactly the same as mentioned above.
 
 ### Connecting to a remote Hive cluster with HA (High Availability) enabled
-This is where things start to get interesting, in addition to location of the remote metastore, for HA (High Availability) enabled Hive clusters the `SparkSession` needs to know about DFS Nameservice configuration.  
+This is where things start to get interesting. In addition to location of the remote metastore, for HA (High Availability) enabled Hive clusters the `SparkSession` needs to know about DFS Nameservice configuration.  
 
 These properties can be found in the `hdfs-site.xml` file located in the `/conf` directory on the remote Hive cluster, for Horton Data Platform (HDP) and  AWS EMR the location is `/etc/hadoop/conf/hdfs-site.xml`. Only a sub-set of the all the properties mentioned in the file are needed.
 
