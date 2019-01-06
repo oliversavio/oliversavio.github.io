@@ -3,17 +3,17 @@ layout: post
 title:  Writing a Spark Dataframe to an Elasticsearch Index
 date:   2019-01-06 12:00:00 +0530
 categories: spark
-description: Writing Spark Dataframes to Elasticsearch Indexes.
-comments: false
+description: Writing a Spark Dataframe to an Elasticsearch Index
+comments: true
 ---
 
 ![Spark Dataframes to ES Index]({{ site.url }}/images/spark_es.png)
 
-In this post we will walk-through the process of writing a Spark `DataFrame` to an Elasticsearch index.
+In this post we will walk through the process of writing a Spark `DataFrame` to an Elasticsearch index.
 
 Elastic provides Apache Spark Support via [elasticsearch-hadoop][es-spark-support], which has native integration between Elasticsearch and Apache Spark.
 
-__Note: All examples are written in Scala 2.11 with Spark SQL 2.3.x. Prior experience with Apache Spark is pre-requisite.__
+__Note: All examples are written in Scala 2.11 with Spark SQL 2.3.x. Prior experience with Apache Spark is a pre-requisite.__
 
 
 ### Breakdown:
@@ -22,8 +22,8 @@ __Note: All examples are written in Scala 2.11 with Spark SQL 2.3.x. Prior exper
 - writeToIndex() Code.
 
 ### Maven Dependencies
-The dependencies mentioned below should be present. `elasticsearch-spark-20` provides the native Elasticsearch support to Spark and `commons-httpclient` is needed to make RESTful calls to the Elasticsearch APIs. For some strange reason this version of `elasticsearch-spark-20` omitted this dependency so it had to be added manually. 
-```
+The dependencies mentioned below should be present in your `classpath`. `elasticsearch-spark-20` provides the native Elasticsearch support to Spark and `commons-httpclient` is needed to make RESTful calls to the Elasticsearch APIs. For some strange reason this version of `elasticsearch-spark-20` omitted the http client dependency so it had to be added manually. 
+{% highlight xml %}
 -------------------
 Snippet of the pom.xml
 -------------------
@@ -42,12 +42,12 @@ Snippet of the pom.xml
     <artifactId>elasticsearch-spark-20_2.11</artifactId>
     <version>6.4.2</version>
 </dependency>
-```
+{% endhighlight %}
 
 ### Spark-ES Configurations
-In order for Spark to communicate with the Elasticsearch, we'll need to know where the ES node(s) are located as well as the port to communicate on. These are provided to the `SparkSession` by setting the `spark.es.nodes` and `spark.es.port` configurations.
+In order for Spark to communicate with the Elasticsearch, we'll need to know where the ES node(s) are located as well as the port to communicate with. These are provided to the `SparkSession` by setting the `spark.es.nodes` and `spark.es.port` configurations.
 
-*Note: The example here uses Elasticsearch hosted to AWS and hence needed an additional configuration `spark.es.nodes.wan.only` to be set to `true`.*
+*Note: The example here used Elasticsearch hosted to AWS and hence needed an additional configuration `spark.es.nodes.wan.only` to be set to `true`.*
 
 Let's see some code to create the `SparkSession`.
 
@@ -63,26 +63,26 @@ val spark = SparkSession
 {% endhighlight %}
 
 ### writeToIndex() Code
-First well define a `case class` to represent our index structure.
+First we'll define a `case class` to represent our index structure.
 {% highlight scala %}
 case class AlbumIndex(artist:String, yearOfRelease:Int, albumName: String)
 {% endhighlight %}
 
-Next we'll create a `Seq` of `AlbumIndex` objects and convert them to a `DataFrame` using the handy `.toDF()` function that can be invoked by importing `spark.implicits`.
+Next we'll create a `Seq` of `AlbumIndex` objects and convert them to a `DataFrame` using the handy `.toDF()` function, which can be invoked by importing `spark.implicits._`.
 
 {% highlight scala %}
 import spark.implicits._
 
    val indexDocuments = Seq(
-    AlbumIndex("Led Zeppelin",1969,"Led Zeppelin"),
-    AlbumIndex("Boston",1976,"Boston"),
-    AlbumIndex("Fleetwood Mac", 1979,"Tusk")
+        AlbumIndex("Led Zeppelin",1969,"Led Zeppelin"),
+        AlbumIndex("Boston",1976,"Boston"),
+        AlbumIndex("Fleetwood Mac", 1979,"Tusk")
    ).toDF
 {% endhighlight %}
 
-*Note: `spark` here stands for the `SparkSession` object.*
+*Note: `spark` here represents the `SparkSession` object.*
 
-Once we have our `DataFrame` ready all we need to do is import `org.elasticsearch.spark.sql._` and invoke the `.saveToEs()` method on it.
+Once we have our `DataFrame` ready, all we need to do is import `org.elasticsearch.spark.sql._` and invoke the `.saveToEs()` method on it.
 
 {% highlight scala %}
 import org.elasticsearch.spark.sql._
