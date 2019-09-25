@@ -7,6 +7,8 @@ description: How to transform a Spark Dataset
 comments: false
 --- 
 
+![Transforming Spark Datasets]({{ site.url }}/images/dataset_transform.png)
+
 There are few times where I've chosen to use Spark as an ETL tool for it's ease of use when it comes to reading/writing parquet, csv or xml files.
 
 Reading any of these files formats is as simple as one line of spark code (after you ensure you have the required dependencies of course)
@@ -14,7 +16,7 @@ Reading any of these files formats is as simple as one line of spark code (after
 ### Intent
 Most of the reference material available online for transforming Datasets points to calling `createOrReplaceTempView()` and registering the `Dataset/Dataframe` as a table, then performing `SQL` operations on it. 
 
-While this maybe fine for most use cases, there are time where it feels more natural to use the Spark's scala transformation functions instead, especially if you already have some pre existing transformation logic written in `Scala` or `ReactiveX` or even `Java 8`.
+While this maybe fine for most use cases, there are times when it feels more natural to use Spark's scala transformation functions instead, especially if you already have some pre existing transformation logic written in `Scala` or `ReactiveX` or even `Java 8`.
 
 If this sounds like something you'd like to do, then please read on.
 
@@ -40,7 +42,7 @@ Output Dataset
 | TK-006|   9 hrs|
 +-------+--------+
 ```
-### Domain objects and transformation function
+### Domain objects and the transformation function
 We'll assume we have the following domain objects and transformation function that converts a `FlightSchedule` object into a `FlightInfo` object.
 
 ```scala
@@ -58,7 +60,7 @@ def existingTransformationFunction(flightSchedule: FlightSchedule): FlightInfo =
 ```
 
 ### Creating the spark session and reading the input Dataset
-Reading the input `Dataset` is kept simple for brevity.
+Creating the input `Dataset` is kept simple for brevity.
 
 ```scala
 val spark = SparkSession.builder().master("local[*]").appName("transform").getOrCreate()
