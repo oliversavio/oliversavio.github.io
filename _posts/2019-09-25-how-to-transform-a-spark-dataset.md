@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  Transforming Spark Datasets using scala transformation functions
+title:  Transforming Spark Datasets using Scala transformation functions
 date:   2019-09-25 12:00:00 +0530
 categories: spark
-description: How to transform a Spark Dataset
+description: Transforming Spark Datasets using Scala transformation functions
 comments: false
 --- 
 
@@ -11,12 +11,12 @@ comments: false
 
 There are few times where I've chosen to use Spark as an ETL tool for it's ease of use when it comes to reading/writing parquet, csv or xml files.
 
-Reading any of these files formats is as simple as one line of spark code (after you ensure you have the required dependencies of course)
+Reading any of these file formats is as simple as one line of spark code (after you ensure that you have the required dependencies of course)
 
 ### Intent
 Most of the reference material available online for transforming Datasets points to calling `createOrReplaceTempView()` and registering the `Dataset/Dataframe` as a table, then performing `SQL` operations on it. 
 
-While this maybe fine for most use cases, there are times when it feels more natural to use Spark's scala transformation functions instead, especially if you already have some pre existing transformation logic written in `Scala` or `ReactiveX` or even `Java 8`.
+While this may be fine for most use cases, there are times when it feels more natural to use Spark's Scala transformation functions instead, especially if you already have some pre existing transformation logic written in `Scala` or `ReactiveX` or even `Java 8`.
 
 If this sounds like something you'd like to do, then please read on.
 
@@ -84,7 +84,7 @@ Error:(34, 18) Unable to find encoder for type stored in a Dataset.  Primitive t
     
 ```
 `Encoders[T]` are used to convert any JVM object or primitive of type `T` to and from Spark SQL's [InternalRow][internal-row] representation.
-Since the `Dataset.map` method required an encoder to be passed as an implicit parameter, we'll define an `implicit` variable.
+Since the `Dataset.map()` method requires an encoder to be passed as an implicit parameter, we'll define an `implicit` variable.
 
 ```scala
 def makeFlightInfo(schedules: Dataset[FlightSchedule]): Dataset[FlightInfo] = {
