@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  Transforming Spark Dataset using the scala transformation functions
+title:  Transforming Spark Datasets using scala transformation functions
 date:   2019-09-25 12:00:00 +0530
 categories: spark
 description: How to transform a Spark Dataset
 comments: false
 --- 
 
-There are few times where i've chosen to use Spark as an ETL tool for it's ease of use when it comes to reading/writing parquet, csv or xml files.
+There are few times where I've chosen to use Spark as an ETL tool for it's ease of use when it comes to reading/writing parquet, csv or xml files.
 
 Reading any of these files formats is as simple as one line of spark code (after you ensure you have the required dependencies of course)
 
