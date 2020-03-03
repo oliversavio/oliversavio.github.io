@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Essentials of Running Java Applications with Docker
+title:  Bare essentials of running Java applications with Docker
 date:   2020-02-29 12:00:00 +0530
 categories: spark
 description: Using Docker containers to run your Java / JVM Applications
@@ -48,7 +48,7 @@ I would highly recommend reading the `Dockerfile` of the image you choose, it ma
 [Alpine Linux Images][alpine-image] are minimalist Docker images that are only 5 MB in size. In a production environment you need code to be deployed quickly. Here is where Alpine Linux based images come in handy, as they contain only the most essential Linux packages. A note of caution however- since Alpine build are based on musl libc and BusyBox, if you have any dependency that only works with traditional GNU/Linux distributions, Alpine containers may not work for you. This is a very rare situation.
 
 ## [Building our Dockerfile](#building-our-dockerfile)
-To run our simple Java application, we will choose an Apline based openjdk image. I found this image by simple searching for "OpenJdk" on Docker Hub and selected the [OpenJdk Official Image][openjdk-official] that showed up.
+To run our simple Java application, we will choose an Apline based openjdk image. I found this image by searching for "OpenJdk" on Docker Hub and selected the [OpenJdk Official Image][openjdk-official] that showed up.
 
 ``` 
 FROM openjdk:8-alpine
@@ -58,7 +58,7 @@ ENTRYPOINT ["java", "-jar", "hellodocker-1.0-SNAPSHOT-shaded.jar"]
 ```
 Let's understand each step in this `Dockerfile`
  - Select the OpenJDK 8 Alpine image.
- - Copy our jar file which is generated on our local environment after running the `mvn clean package` command into a directory within our  image container.
+ - Copy our jar file which is generated on our local environment after running the `mvn clean package` command into a directory within our  image container. Command format `COPY <src> <dest>`.
  - Set that directory as the current directory, sort of like `cd /usr/local/app`
  - Execute the jar file.
 
@@ -89,7 +89,8 @@ Output :> Hello Docker!!
 
 ## [Running a Spring Boot REST Application with Docker](#running-a-spring-boot-rest-application-with-docker)
 Now that we covered the basics, it's time for something a bit more real world. I've forked a sample [Spring Boot REST application][spring-boot-docker-git]. This application is packaged as an executable jar and runs with an embedded server which listens on port `8080` by default.
-As with the previous example, we'll create a Docker image and execute the application. The one extra step will be exposing the port the application listens onto the outside world. Here is the `Dockerfile`.
+As with the previous example, we'll create a Docker image and execute the application. The one extra step will be exposing the port the application listens on to the outside world. Here is the `Dockerfile`.
+
 ```
 FROM openjdk:8-alpine
 COPY target/rest-service-0.0.1-SNAPSHOT.jar /usr/local/app/
@@ -99,7 +100,7 @@ ENTRYPOINT ["java", "-jar", "rest-service-0.0.1-SNAPSHOT.jar"]
 ```
 Let's understand each step in this `Dockerfile`
  - Select the OpenJDK 8 Alpine image.
- - Copy our jar file which is generated on our local environment after running the `mvn clean package` command into a directory within our  image container.
+- Copy our jar file which is generated on our local environment after running the `mvn clean package` command into a directory within our  image container. Command format `COPY <src> <dest>`.
  - Set that directory as the current directory, sort of like `cd /usr/local/app`
  - __Expose the port 8080 which is the default port for Spring Boot Web Applications.__
  - Execute the jar file.
@@ -110,7 +111,7 @@ The build command remains the same.
 
 `docker build -t oliver/springrest .`
 
-When running the container we specify an additional parameter `-p` to publish the port in order for the outside world to communicate with the container. Here to keep it simple we map the same port 8080.
+When running the container we specify an additional parameter `-p` to publish the port from the host in which your container is running, in order for the outside world to communicate with the container via the host. Here to keep it simple we map the same port 8080.
 
 `docker run -p 8080:8080 oliver/springrest`
 
@@ -118,12 +119,13 @@ Now you will be able to `curl localhost:8080/greeting` and get a response.
 
 
 ## References
-1. [Docker Certified Images][certified-images]
-2. [Alpine Images][alpine-image]
+1. [Docker development best practices][best-practices]
+2. [Docker Certified Images][certified-images]
 3. [OpenJDK Official Docker Image][openjdk-official]
 4. [How to build Docker images with Dockerfile][building-docker-images]
 5. [Source code for the simple Java application][java-docker-git]
 6. [Source code for the RESTful Spring Boot Application][spring-boot-docker-git]
+
  
 
 [openjdk-official]: https://hub.docker.com/_/openjdk
@@ -133,4 +135,5 @@ Now you will be able to `curl localhost:8080/greeting` and get a response.
 [official-images]: https://docs.docker.com/docker-hub/official_images/
 [certified-images]: https://docs.docker.com/docker-hub/publish/certify-images/
 [building-docker-images]: https://linuxize.com/post/how-to-build-docker-images-with-dockerfile/
+[best-practices]: https://docs.docker.com/develop/dev-best-practices/
 
