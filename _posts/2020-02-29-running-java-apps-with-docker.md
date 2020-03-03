@@ -8,6 +8,8 @@ comments: false
 --- 
 
 
+![Containers]({{ site.url }}/images/container-3859710_1280.jpg)
+
 Hopefully you are here because you are convinced that you want to use Docker to run your Java / JVM application. In this post I will go over the most important concepts you need to know in order to run your Java applications within Docker containers in a production environment.
 
 ## Prerequisites
