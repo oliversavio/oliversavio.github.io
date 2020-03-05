@@ -1,20 +1,17 @@
 ---
 layout: post
-title:  "Time-Series Scatter Plot of Server Requests using Python"
-date:   2016-02-15 23:25:52 +0530
-categories: python
-description: Time-Series Scatter Plot using Python
-comments: true
+title:  Time-Series Scatter Plot of Server Requests using Python
+tags: [python]
 ---
 In this post I will attempt to explain how I used [`Pandas`][Pandas] and [`Matplotlib`][Matplotlib] to quickly generate server requests reports on a daily basis. 
 
 __Problem To Be Solved:__ Generate a Scatter plot of the number of requests to a particular URL along with the 99th, 95th and 90th percentile of requests for the duration of a day.
 
-![Scatter Plot Image]({{ site.url }}/images/figure_1.png)
+![Scatter Plot Image]({{ "/img/figure_1.png" | absolute_url }})
 
 __Breakdown:__
 
-1. Reading multiple server access log files.
+1. __Reading multiple server access log files.__
 2. __Parsing the timestamp fields so that the graph can be scaled appropriately.__
 3. __Aggregating the timestamp fields.__
 4. __Calculating the Quantile values.__
@@ -25,13 +22,13 @@ In this post I will leave out the details related to point number 1 and will con
 ### Parsing the timestamp fields so that the graph can be scaled appropriately
 Let's assume the input file contains only timestamps and the file has been read into a list using the following code. 
 
-{% highlight python %}
+```python
 lines = [line.rstrip('\n') for line in open(file_name)]
-{% endhighlight %}
+```
 
 Since the x-axis of the scatter plot will contain timestamp values, the `lines` `List` which currently contains string values, needs to be converted into a `List` of timestamp values. My initial instinct was to use an explicit `for` loop. In an effort to speed up my script I came across python's built-in `map()` function and the concept of `List` comprehension which reduce the `for` loop overhead when the loop body is relatively simple, check [here][Python-optimization] for more details. After a bit of benchmarking I settled on using the `List` comprehension method.
 
-{% highlight python %}
+{% highlight python linenos %}
 from datetime import timedelta, datetime
 
 dt_lst = [datetime.strptime(date_str, '%H:%M:%S') for date_str in lines]
@@ -42,7 +39,7 @@ In this aggregation step the goal was to perform a group-by on the timestamps in
 
 _Note: I could have probably achieved the same result using only `Pandas`._
 
-{% highlight python %}
+{% highlight python linenos %}
 import pandas as pd
 import numpy as np
 from pandas import DataFrame, Series
@@ -60,23 +57,23 @@ df['Counts'] = ones
 {% endhighlight %}
 The [`DataFrame`][DataFrame] object is a tabular data structure with labeled rows and columns, you may think of it as an Excel Spreadsheet. After creating the `DataFrame` `df` you will end up with a structure as displayed below.
 
-![DataFrame Image]({{ site.url }}/images/DataFrame.png)
+![DataFrame Image]({{ site.url }}/img/DataFrame.png)
 
 *Figure 1: Pandas DataFrame*
 
 The next step is to group-by the _Request_Time_ column and sum up the counts, this is achieved by calling the [`groupby`][GroupBy] method on the `DataFrame` object.
-{% highlight python %}
+{% highlight python linenos %}
 grouped = df.groupby('Request_Time').count()
 {% endhighlight %}
 
 This gives us an aggregated `DataFrame` as displayed below
 
-![Grouped Image]({{ site.url }}/images/Grouped.png)
+![Grouped Image]({{ site.url }}/img/Grouped.png)
 
 ### Calculating the Quantile values
 Calculating the quantile values on the aggregated `DataFrame` can be done by calling the [`quantile()`][Quantile] method which returns a `DataFrame` containing the value and the `dtype`.
 
-{% highlight python %}
+{% highlight python linenos %}
 ninety_five_quant = grouped.quantile(.95)[0] # [0] since we only need the quantile value
 ninety_ninth_quant = grouped.quantile(.99)[0] # [0] since we only need the quantile value
 ninety_eight_quant = grouped.quantile(.98)[0] # [0] since we only need the quantile value
@@ -85,7 +82,7 @@ ninety_eight_quant = grouped.quantile(.98)[0] # [0] since we only need the quant
 ### Generating the Scatter Plot
 The Scatter plot is generated using the [`Matplotlib`][Matplotlib] library. Since we are plotting timestamp values on the x-axis we will use the [`plot_date()`][PlotDate] method.
 
-{% highlight python %}
+{% highlight python linenos %}
 ax.plot_date(x, y, xdate=True, ydate=False, color='skyblue')
 {% endhighlight %}
 
@@ -95,7 +92,7 @@ _Note: The `Matplotlib` library contains extensive documentation on all it's API
 
 _The snippet below contains code related to rendering the Scatter Plot. I have taken a very simplistic and naive approach since it was good enough for my requirement._ 
 
-{% highlight python %}
+{% highlight python linenos %}
 import matplotlib.pyplot as plt
 
 total_req =  'Total request: ' + str(count)

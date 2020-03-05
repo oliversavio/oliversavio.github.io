@@ -1,15 +1,14 @@
 ---
 layout: post
 title:  Writing a Spark Dataframe to an Elasticsearch Index
-date:   2019-01-06 12:00:00 +0530
-categories: spark
-description: Writing a Spark Dataframe to an Elasticsearch Index
+tags: [spark, scala]
+subtitle: Writing a Spark Dataframe to an Elasticsearch Index
 comments: true
 ---
 
-![Spark Dataframes to ES Index]({{ site.url }}/images/spark_es.png)
-
 In this post we will walk through the process of writing a Spark `DataFrame` to an Elasticsearch index.
+
+![Spark Dataframes to ES Index]({{ site.url }}/img/spark_es.png)
 
 Elastic provides Apache Spark Support via [elasticsearch-hadoop][es-spark-support], which has native integration between Elasticsearch and Apache Spark.
 
@@ -23,7 +22,7 @@ __Note: All examples are written in Scala 2.11 with Spark SQL 2.3.x. Prior exper
 
 ### Maven Dependencies
 The dependencies mentioned below should be present in your `classpath`. `elasticsearch-spark-20` provides the native Elasticsearch support to Spark and `commons-httpclient` is needed to make RESTful calls to the Elasticsearch APIs. For some strange reason this version of `elasticsearch-spark-20` omitted the http client dependency so it had to be added manually. 
-{% highlight xml %}
+{% highlight xml linenos %}
 -------------------
 Snippet of the pom.xml
 -------------------
@@ -51,7 +50,7 @@ In order for Spark to communicate with the Elasticsearch, we'll need to know whe
 
 Let's see some code to create the `SparkSession`.
 
-{% highlight scala %}
+{% highlight scala linenos %}
 val spark = SparkSession
      .builder()
      .appName("WriteToES")
@@ -64,13 +63,13 @@ val spark = SparkSession
 
 ### writeToIndex() Code
 First we'll define a `case class` to represent our index structure.
-{% highlight scala %}
+{% highlight scala linenos %}
 case class AlbumIndex(artist:String, yearOfRelease:Int, albumName: String)
 {% endhighlight %}
 
 Next we'll create a `Seq` of `AlbumIndex` objects and convert them to a `DataFrame` using the handy `.toDF()` function, which can be invoked by importing `spark.implicits._`.
 
-{% highlight scala %}
+{% highlight scala linenos %}
 import spark.implicits._
 
    val indexDocuments = Seq(
@@ -84,7 +83,7 @@ import spark.implicits._
 
 Once we have our `DataFrame` ready, all we need to do is import `org.elasticsearch.spark.sql._` and invoke the `.saveToEs()` method on it.
 
-{% highlight scala %}
+{% highlight scala linenos %}
 import org.elasticsearch.spark.sql._
 
 indexDocuments.saveToEs("demoindex/albumindex")
@@ -92,7 +91,7 @@ indexDocuments.saveToEs("demoindex/albumindex")
 
 Here is the entire source code.
 
-{% highlight scala %}
+{% highlight scala linenos %}
 import org.apache.spark.sql.SparkSession
 import org.elasticsearch.spark.sql._
 

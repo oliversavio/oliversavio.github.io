@@ -1,13 +1,11 @@
 ---
 layout: post
-title:  "Running Spark SQL applications with a remote Hive cluster"
-date:   2018-12-28 12:00:00 +0530
-categories: spark
-description: Connecting Spark Applications to remote Hive clusters.
-comments: false
+title:  Running Spark SQL applications with a remote Hive cluster
+subtitle: Connect your Spark cluster to a remote Hive cluster
+tags: [spark, scala, hive]
 ---
 
-![AWS EMR Spark Cluster]({{ site.url }}/images/spark.png)
+![AWS EMR Spark Cluster]({{ site.url }}/img/spark.png)
 
 The graphic above depicts a common workflow for running Spark SQL apps. The Hive metastore holds table schemas (this includes the location of the table data), the Spark clusters, AWS EMR clusters in this case are treated as ephemeral, they spin up, run their application(s) and terminate.
 
@@ -24,7 +22,7 @@ __Note: All examples are written in Scala 2.11 with Spark SQL 2.3.x. Prior exper
 ### Running Spark SQL with Hive
 Spark SQL supports the HiveQL syntax as well as Hive SerDes and UDFs, allowing you to access existing Hive warehouses. Connecting to a Hive metastore is straightforward - all you need to do is enable hive support while instantiating the `SparkSession`.
 
-{% highlight scala %}
+{% highlight scala linenos %}
 import org.apache.spark.sql.SparkSession
 
 // warehouseLocation points to the default location for managed databases and tables
@@ -47,7 +45,7 @@ In order to connect to a remote Hive cluster, the `SparkSession` needs to know w
 
 Create a file named `hive-site.xml` with the following configuration:
 
-{% highlight xml %}
+{% highlight xml linenos %}
 <configuration>
     <property>
         <name>hive.metastore.uris</name>
@@ -66,7 +64,7 @@ Create a file named `hive-site.xml` with the following configuration:
 _Note: Although `hive.metastore.client.connect.retry.delay` and `hive.metastore.client.socket.timeout` are nice to have properties in a production environment, they aren't mandatory._
 
 This file needs to be passed as a parameter when running the `spark-submit` command as follows:
-{% highlight bash %}
+{% highlight bash linenos %}
 spark-submit \
 --master yarn \
 --deploy-mode cluster \
@@ -84,7 +82,7 @@ This is where things start to get interesting. In addition to location of the re
 These properties can be found in the `hdfs-site.xml` file located in the `/conf` directory on the remote Hive cluster, for Horton Data Platform (HDP) and  AWS EMR the location is `/etc/hadoop/conf/hdfs-site.xml`. Only a sub-set of the all the properties mentioned in the file are needed.
 
 Create a file named `hdfs-site.xml` with the following configuration:
-{% highlight xml %}
+{% highlight xml linenos %}
 <configuration>
     <property>
         <name>dfs.nameservices</name>
@@ -112,7 +110,7 @@ _Note: The configuration above assumes the HDFS cluster has been configured with
 
 Finally, both `hive-site.xml` and `hdfs-site.xml` need to be passed as parameters to the `spark-submit` command.
 
-{% highlight bash %}
+{% highlight bash linenos %}
 spark-submit \
 --master yarn \
 --deploy-mode cluster \

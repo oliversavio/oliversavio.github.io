@@ -1,17 +1,13 @@
 ---
 layout: post
 title:  Transforming Spark Datasets using Scala transformation functions
-date:   2019-09-25 12:00:00 +0530
-categories: spark
-description: Transforming Spark Datasets using Scala transformation functions
-comments: false
+tags: [spark, scala]
 --- 
 
-![Transforming Spark Datasets]({{ site.url }}/images/dataset_transform.png)
+There are few times where I've chosen to use Spark as an ETL tool for it's ease of use when it comes to reading/writing parquet, csv or xml files. Reading any of these file formats is as simple as one line of spark code (after you ensure that you have the required dependencies of course)
 
-There are few times where I've chosen to use Spark as an ETL tool for it's ease of use when it comes to reading/writing parquet, csv or xml files.
+![Transforming Spark Datasets]({{ site.url }}/img/dataset_transform.png)
 
-Reading any of these file formats is as simple as one line of spark code (after you ensure that you have the required dependencies of course)
 
 ### Intent
 Most of the reference material available online for transforming Datasets points to calling `createOrReplaceTempView()` and registering the `Dataset/Dataframe` as a table, then performing `SQL` operations on it. 
@@ -45,24 +41,23 @@ Output Dataset
 ### Domain objects and the transformation function
 We'll assume we have the following domain objects and transformation function that converts a `FlightSchedule` object into a `FlightInfo` object.
 
-```scala
+{% highlight scala linenos %}
 case class FlightSchedule(flightNo: String, departure: Long, arrival: Long)
 
 case class FlightInfo(flight: String, duration: String)
-```
 
-```scala
+
 def existingTransformationFunction(flightSchedule: FlightSchedule): FlightInfo = {
   val duration = (flightSchedule.arrival - flightSchedule.departure) / 60 / 60
   FlightInfo(flightSchedule.flightNo, s"$duration hrs")
 }
 
-```
+{% endhighlight %}
 
 ### Creating the spark session and reading the input Dataset
 Creating the input `Dataset` is kept simple for brevity.
 
-```scala
+{% highlight scala linenos %}
 val spark = SparkSession.builder().master("local[*]").appName("transform").getOrCreate()
 
 import spark.implicits._
@@ -73,11 +68,12 @@ val schedules: Dataset[FlightSchedule] = Seq(
     FlightSchedule("TK-006", 1567318178, 1567351838)
 ).toDS()
 
-```
+{% endhighlight %}
 
 ### Defining the Encoder and the Spark transformation
 This is where things start to get interesting. In order to transform a `Dataset[FlightSchedule]` to a `Dataset[FlightInfo]`,
 Spark needs to know how to _"Encode"_ your `case class`. Omitting this step will give you the following dreadful compile time error.
+
 ```
 Error:(34, 18) Unable to find encoder for type stored in a Dataset.  Primitive types (Int, String, etc) and Product types (case classes) are supported by importing spark.implicits._  Support for serializing other types will be added in future releases.
     schedules.map(s => existingTransformationFunction(s))
@@ -86,17 +82,17 @@ Error:(34, 18) Unable to find encoder for type stored in a Dataset.  Primitive t
 `Encoders[T]` are used to convert any JVM object or primitive of type `T` to and from Spark SQL's [InternalRow][internal-row] representation.
 Since the `Dataset.map()` method requires an encoder to be passed as an implicit parameter, we'll define an `implicit` variable.
 
-```scala
+{% highlight scala linenos %}
 def makeFlightInfo(schedules: Dataset[FlightSchedule]): Dataset[FlightInfo] = {
   implicit val encoder: ExpressionEncoder[FlightInfo] = ExpressionEncoder[FlightInfo]
   schedules.map(s => existingTransformationFunction(s))
 }
-```
+{% endhighlight %}
 
 ### Transforming the Dataset
 The only thing left to do now is call the `transform` method on the input `Dataset`. I will include the entire code here along with calls to `show()` so that we can see our results.
 
-```scala
+{% highlight scala linenos %}
 object DatasetTransform {
   def main(args: Array[String]): Unit = {
 
@@ -132,7 +128,7 @@ object DatasetTransform {
   }
 
 }
-```
+{% endhighlight %}
 
 
 

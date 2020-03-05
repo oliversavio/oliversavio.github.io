@@ -1,16 +1,14 @@
 ---
 layout: post
-title:  "Profiling with Java Agents - Part 2"
-date:   2016-03-28 12:00:00 +0530
-categories: java
-description: Profiling with Java Agents
-comments: true
+title: Profiling with Java Agents - Part 2
+tags: [java]
+subtitle: Using an agent to extract custom metrics.
 ---
 In-case you haven't read Part 1, you can find it [here][Part1].
 
 ### Introduction
 Let's look at the Java Pyramid program we will be profiling. We will assume we do not have access to the source code. The program gives us the following output.
-{% highlight text %}
+```text
    1
   1 1
  1 1 1
@@ -26,16 +24,17 @@ Let's look at the Java Pyramid program we will be profiling. We will assume we d
   1 1 1 1
  1 1 1 1 1
 1 1 1 1 1 1
-{% endhighlight %}
+```
 
 On running our profiler with the Java Pyramid program we get the following metrics
-{% highlight text %}
+```text
 ========= Method Count Metrics =========
 com.oliver.printpyramid.PrintPyramid.printPyramid-->3
 com.oliver.printpyramid.PrintPyramid.main-->1
 com.oliver.printpyramid.PrintPyramid.getLine-->15
 ========= End Method Count Metrics =========
-{% endhighlight %}
+```
+
 Now we have some insight into which methods are being called by the Pyramid program. 
 
 
@@ -78,7 +77,7 @@ _Note: For a more complete and detailed explanation on Javassist please see refe
 
 ### The Metrics Collector Interface
 Here is the `MetricsCollector` interface which will be instrumented into the Java Pyramid program. The implementation of this interface is pretty straightforward and can be followed through with just the javadoc comments.
-{% highlight java %}
+{% highlight java linenos %}
 package com.oliver.jagent.mectrics;
 
 public interface MetricsCollector {
@@ -118,7 +117,7 @@ public interface MetricsCollector {
 ### Registering a custom Class File Transformer
 In the [first post][Part1] we implemented the `premain` method and displayed a "Hello World! Java Agent" message. In order to modify byte-code we need to write and register a custom `ClassFileTransformer`. This is done by using the `addTransformer` method of the `java.lang.instrument.Instrumentation` interface. 
 
-{% highlight java %}
+{% highlight java linenos %}
 package com.oliver.jagent;
 
 import java.lang.instrument.Instrumentation;
@@ -130,7 +129,7 @@ public static void premain(String agentArgs, Instrumentation inst){
 
 ### Implementing MyClassTransformer
 The `MyClassTransformer` class implements the `ClassFileTransformer` interface and the `transform` method. We have initialized a `ClassPool` with the default class pool, this is fine when running a simple application like the Java Pyramid program in this example. However for applications running on web application servers like Tomcat and JBoss which use multiple class loaders, creating multiple instances of `ClassPool` might be necessary; an instance of `ClassPool` should be created for each class loader. You may find mode details on this [here][javassist-tutorial].
-{% highlight java %}
+{% highlight java linenos %}
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import javassist.ClassPool;
@@ -152,7 +151,7 @@ public class MyClassTransformer implements ClassFileTransformer {
 
 #### Filtering out Classes we do not intent to modify
 Our agent code will intercept all the classes to be loaded by the VM including the its own classes, hence we need to filter out these classes in the transformer and return their byte-code without any modification. The following code snippet does just this.
-{% highlight java %}
+{% highlight java linenos %}
 byte[] modifiedByteCode = classfileBuffer;
 String clazzName = className.replace("/", ".");
 //Skip all agent classes
@@ -168,7 +167,7 @@ if (!clazzName.startsWith("com.oliver.printpyramid")) {
 #### Adding the instrumentation code
 Now that we have filtered out the unwanted classes it's time to add our instrumentation code.
 The following code snippet will obtain a `class` representation from the `ClassPool`, iterate over all the methods presents in the class and use `insertBefore()` to add our instrumentation code at the start of every method.
-{% highlight java %}
+{% highlight java linenos %}
 private MetricsCollector collector = MetricsCollectorImpl.instance();
 ...
 //Records a package name so that the Javassist compiler may resolve a class name.
@@ -189,7 +188,7 @@ _Note: Exception handling has been omitted for brevity._
 ### Generating a Fat JAR
 In this example, we have used `Javassist` which is a third-party library. When running this version of the agent you will need to specify a path to this jar as well. In order to keep things simple, tools like JRebel create a "fat jar" or "jar with dependencies", which uses a single JAR file. This can be achieved using the `maven-assembly-plugin`.
 
-{% highlight java %}
+{% highlight xml linenos %}
 <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-assembly-plugin</artifactId>
@@ -214,7 +213,7 @@ In this example, we have used `Javassist` which is a third-party library. When r
 </plugin>
 {% endhighlight %}
 Similar to Part 1, `<manifestFile>` contains the path to our custom manifest file, no changes have been made there except a change in the agent class name.
-{% highlight java %}
+{% highlight java linenos %}
 Manifest-Version: 1.0
 Premain-Class: com.oliver.jagent.Agent
 {% endhighlight %}

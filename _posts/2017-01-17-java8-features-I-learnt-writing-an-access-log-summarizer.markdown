@@ -1,10 +1,7 @@
 ---
 layout: post
-title:  "Java 8 features I learnt while writing an access log summarizer"
-date:   2017-01-26 12:00:00 +0530
-categories: java
-description: Java 8 features
-comments: true
+title:  Java 8 features I learnt while writing an access log summarizer
+tags: [java]
 ---
 
 Java 8 has been out for quite some time now and I thought, the best way to get up-to speed with the new features, is to dive in head first and learn along the way, while I code a solution to a real world problem.
@@ -26,7 +23,7 @@ It frees us from the clutter of looping syntax and temporary variables and makes
 Below is an example picked up from the wonderful series of [posts][stream-library] on the `java.util.stream` library written by Brian Goetz.
 
 _Use Case: "Print the names of sellers in transactions with buyers over age 65, sorted by name."_
-{% highlight java %}
+{% highlight java linenos %}
 // Using Looping.
 Set<Seller> sellers = new HashSet<>();
 for (Txn t : txns) {
@@ -42,9 +39,6 @@ Collections.sort(sorted, new Comparator<Seller>() {
 for (Seller s : sorted)
     System.out.println(s.getName());
 
-{% endhighlight %}
-
-{% highlight java %}
 // Using the Stream Library
 txns.stream()
     .filter(t -> t.getBuyer().getAge() >= 65)
@@ -70,7 +64,7 @@ As per the Java Language Specification documentation, the type of variable decla
 It is worth noting, that exceptions thrown by the `try-with-resources` statement while closing resources are suppressed. These exceptions can be retrieved by calling the `Throwable.getSuppressed` method. 
 
 Here is a snippet from the source code which streams lines from a file. Since the `Stream` interface extends the `AutoCloseable` interface, the stream will be closed once the file has been read or in the event an exception is thrown.
-{% highlight java %}
+{% highlight java linenos %}
 try(Stream<String> stream = Files.lines(Paths.get(fileName))) {
 	metricMap = parser.parseLog(stream, new ParsingOptions(urlIndx, timeIndx));
 } catch (IOException e) {
@@ -85,7 +79,7 @@ You can find more details about the the `try-with-resources` statement [here][tr
 
 ### Using Comparators the Java 8 way
 One of the new language features of Java 8 is the `@FunctionalInterface` annotation. I must admit, I haven't been able to wrap my head around this concept completely as yet. But what I can tell you is, that it enables us to write Comparators this way.
-{% highlight java %}
+{% highlight java linenos %}
 Comparator<Metric> comparator = Comparator.comparingLong(Metric::getCount);
 Collections.sort(filetredMetrics, comparator.reversed());
 {% endhighlight %}

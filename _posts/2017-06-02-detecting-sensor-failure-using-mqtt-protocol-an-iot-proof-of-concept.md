@@ -1,16 +1,13 @@
 ---
 layout: post
-title:  "Detecting sensor failure using the MQTT protocol, an IoT Proof of Concept"
-date:   2017-06-02 12:00:00 +0530
-categories: iot arduino
-description: Detecting sensor failure using the MQTT protocol
-comments: true
+title:  Detecting sensor failure using the MQTT protocol, an IoT Proof of Concept
+tags: [iot, arduino]
 ---
 
 ## Motivation
 IoT technology is beginning to witness wide scale adoption in the consumer as well as industrial environments. In a typical enterprise scenario, you may have a large number of inexpensive sensor nodes interacting with machinery and sending data to Gateway nodes. These Gateway nodes are responsible for aggregating sensor data before sending it to the back-end systems which may reside in the cloud. Detecting a failure in one or more of these inexpensive sensor nodes is critical in preempting catastrophic failures.
 
-![Sensor Nodes with Gateways]({{ site.url }}/images/Node_Gateway.png)
+<img src="{{ '/img/Node_Gateway.png' | absolute_url }}" />
 
 _[Image Source][Nodegateway]_
 
@@ -84,7 +81,7 @@ I followed [this][arduinomqtt] article by Nick O'Leary to install the MQTT libra
 
 The following snippet contains the initial setup required for the Ethernet client as well as defining the IP address to the MQTT broker, which is the Eclipse Paho Sandbox environment.
 
-{% highlight c %}
+{% highlight c linenos %}
 // Update these with values suitable for your network.
 // These values are used by the Ethernet shield
 byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xEE };
@@ -97,7 +94,7 @@ PubSubClient mqttClient(ethClient);
 {% endhighlight %}
 
 Next we will need our LWT parameters, namely the QoS, the will topic, the will message and the retained flag. As the retained flag is set to `true`, any new client subscribing to the status topic will immediately get the value.
-{% highlight c %}
+{% highlight c linenos %}
 //LWT message constants
 byte willQoS = 1;
 const char* willTopic = "com/oliver/arduino/status";
@@ -106,7 +103,7 @@ boolean willRetain = true;
 {% endhighlight %}
 
 Next the `mqttClientConnect()` function will setup the connection and if successful, publish an "Online" status to the "com/oliver/arduino/status" topic with a retained set to `true`. Since this is the same as the LWT topic, clients will always get the last known good value. [Here][pubsubapi] is the link to the API documentation of the `connect()` function.
-{% highlight c %}
+{% highlight c linenos %}
 void mqttClientConnect() {
   while(!mqttClient.connected()) {
     boolean connected = mqttClient.connect("arduinoClientId98", willTopic, willQoS, willRetain, willMessage);
@@ -128,7 +125,7 @@ _Note: I am intentionally leaving out the `loop()` and `setup()` functions for b
 Below are code snippets of the Java client. It connects to the MQTT broker, and subscribes to the "com/oliver/arduino/status" topic.
 Assuming the Arduino client has been successfully connected earlier, this subscribing client should receive the "Audrino Online" message. On abruptly disconnecting the Arduino client (I yanked out the Ethernet cable), it should received the "Arduino Offline" message. The Java code is written using the [Eclipse Paho MQTT library for Java][pahojava].
 
-{% highlight java%}
+{% highlight java linenos %}
 //Initial Setup parameters
 public static final String BROKER_URL = "tcp://iot.eclipse.org:1883";
 public static final String CLIENT_ID = "subClientId98";
@@ -137,7 +134,7 @@ private MqttClient mqttSubClient;
 {% endhighlight %}
 
 The `setCallback()` method takes a class to callback when events for the client arrives, I have provided a simple in-line implementation for the purposes of this PoC. The `messageArrived()` method prints the message out to standard output. 
-{% highlight java%}
+{% highlight java linenos %}
 public void start() {
 	try {
 		mqttSubClient.setCallback(new MqttCallback() {

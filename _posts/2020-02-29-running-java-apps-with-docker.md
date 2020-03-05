@@ -1,16 +1,13 @@
 ---
 layout: post
 title:  Bare essentials of running Java applications with Docker
-date:   2020-02-29 12:00:00 +0530
-categories: spark
-description: Using Docker containers to run your Java / JVM Applications
-comments: false
+tags: [docker, devops ,java]
+subtitle: Using Docker containers to run your Java / JVM Applications
 --- 
 
-
-![Containers]({{ site.url }}/images/container-3859710_1280.jpg)
-
 Hopefully you are here because you are convinced that you want to use Docker to run your Java / JVM application. In this post I will go over the most important concepts you need to know in order to run your Java applications within Docker containers in a production environment.
+
+![Containers]({{ site.url }}/img/container-3859710_1280.jpg)
 
 ## Prerequisites
  - You have Docker installed and setup.
