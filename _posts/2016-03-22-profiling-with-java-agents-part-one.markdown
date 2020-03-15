@@ -87,7 +87,7 @@ _Note: For the purposes of this example we are using a test class in the same pa
 
 Now run a `maven install` to create the agent JAR. Here is a screenshot of the disassembled JAR.
 
-![DataFrame Image]({{ site.url }}/images/jar-screenshot.png)
+![DataFrame Image]({{ site.url }}/img/jar-screenshot.png)
 
 Run the App class with the `-javaagent` command line argument.
 {% highlight java linenos %}

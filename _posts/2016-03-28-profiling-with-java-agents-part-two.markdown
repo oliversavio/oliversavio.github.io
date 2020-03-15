@@ -55,7 +55,7 @@ In sections below will look at:
 ### A quick overview of Javassist
 _`Javassist` is a class library for editing bytecodes in Java; it enables Java programs to define a new class at runtime and to modify a class file when the JVM loads it._
 
-![Javassist Components]({{ site.url }}/images/jast.png)
+![Javassist Components]({{ site.url }}/img/jast.png)
 _[Image Source][JAST-source]_
 
 The main components of Javassist as indicated by the image above consist of
