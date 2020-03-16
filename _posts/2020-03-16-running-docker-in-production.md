@@ -204,6 +204,7 @@ docker exec -it restapp-volumes sh
 ## References
 1. [Manage Data in Docker][docker-storage]
 2. [Memory issues with Java and Docker][java8-docker-issues]
+3. [Source code for the RESTful Spring Boot Application][spring-boot-docker-git]
 
 
 
@@ -213,3 +214,4 @@ docker exec -it restapp-volumes sh
 [spring-boot-docker-git]: https://github.com/oliversavio/gs-rest-service/tree/master/complete
 [docker-limits]: https://docs.docker.com/config/containers/resource_constraints/
 [java8-docker-issues]: https://royvanrijn.com/blog/2018/05/java-and-docker-memory-limits/
+[spring-boot-docker-git]: https://github.com/oliversavio/gs-rest-service/tree/master/complete
