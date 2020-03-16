@@ -21,7 +21,7 @@ subtitle: If you're serious about crafting software, check out these books.
 - [The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win 5th Anniversary Edition][pheonix-project]
 - [Soft Skills: The software developer's life manual][soft-skills]
 
-_Note: All links are part of Amazon's Affiliate Programme, every purchase made via these links helps me keep this blog up and running._
+_Note: All links are part of Amazon's Associates Program, every purchase made via these links helps me keep this blog up and running._
 
 
 
