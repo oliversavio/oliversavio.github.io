@@ -22,7 +22,7 @@ subtitle: If you're serious about crafting software, check out these books.
 - [Soft Skills: The software developer's life manual][soft-skills]
 
 ### Poetry
-These books are by my good fried Mihir Chitre, an engineer turned fulltime ad-man and poet.
+These books are by my good friend Mihir Chitre, an engineer turned fulltime ad-man and poet.
 - [School of Age][school-of-age]
 - [Hyphenated][hypen]
 
