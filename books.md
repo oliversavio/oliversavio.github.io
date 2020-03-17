@@ -21,6 +21,11 @@ subtitle: If you're serious about crafting software, check out these books.
 - [The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win 5th Anniversary Edition][pheonix-project]
 - [Soft Skills: The software developer's life manual][soft-skills]
 
+### Poetry
+These books are by my good fried Mihir Chitre, an engineer turned fulltime ad-man and poet.
+- [School of Age][school-of-age]
+- [Hyphenated][hypen]
+
 _Note: All links are part of Amazon's Associates Program, every purchase made via these links helps me keep this blog up and running._
 
 
@@ -34,3 +39,5 @@ _Note: All links are part of Amazon's Associates Program, every purchase made vi
 [let-us-c]: https://amzn.to/3d5TvGP
 [java-concurrency]: https://amzn.to/33olEV9
 [soft-skills]: https://amzn.to/2IROOTa
+[school-of-age]: https://amzn.to/2TX6KC7
+[hypen]: https://amzn.to/2wYPYcP
