@@ -135,7 +135,11 @@ docker volume inspect rest-app-vol
 
 Docker has mounted the folder `/var/lib/docker/volumes/rest-app-vol/_data` to the container. You may also inspect the container and look at the Mount section as we did in the previous part.
 
-_Note: If you are running Docker for Mac as I am, you will not find anything at this location. This is because Docker for Mac runs within a VM. In order to get to the volume you'll have to run `screen ~/Library/Containers/com.docker.docker/Data/vms/0/tty` .Now you are inside the VM and should be able to navigate to to `/var/lib/docker/volumes/rest-app-vol/_data`. On a side note, since you are starting a `screen` I'd highly recommend you learn the basics of you using `screen`. `Ctrl+a` `d` to exit._
+_Note: If you are running Docker for Mac as I am, you will not find anything at this location. This is because Docker for Mac runs within a VM. In order to get to the volume you'll have to run the following command._
+{% highlight bash linenos %}
+screen ~/Library/Containers/com.docker.docker/Data/vms/0/tty
+{% endhighlight %}
+_Now you are inside the VM and should be able to navigate to to `/var/lib/docker/volumes/rest-app-vol/_data`. On a side note, since you are starting a `screen` I'd highly recommend you learn the basics of you using `screen`._
 
 
 ## [Understanding memory and CPU limits](#understanding-memory-and-cpu-limits)
