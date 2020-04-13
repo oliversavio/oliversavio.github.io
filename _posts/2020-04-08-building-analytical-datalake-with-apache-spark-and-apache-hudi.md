@@ -1,14 +1,14 @@
 ---
 layout: post
 title: Building an analytical data lake with Apache Spark and Apache Hudi - Part 1
-tags: [spark, big-data , scala]
+tags: [spark, data-lake , scala, hudi]
 subtitle: Using Apache Spark and Apache Hudi to build and manage data lakes on DFS and Cloud storage.
 --- 
 
 Most modern data lakes are build using some sort of distributed file system (DFS) like HDFS or cloud based storage like AWS S3.
 One of the underlying principles followed is the "write-once-read-many" access model for files. This is great when working with large volumes of data, think hundreds of gigabytes to terabytes.
 
-However, when building an analytical data lake it is not uncommon to have data that gets updated. Depending on you use case these updates could be as frequent as hourly to probably daily or weekly updates. You may also need to run analytics over the most up-to-date data, historical data containing all the updates or even just the latest increments.
+However, when building an analytical data lake it is not uncommon to have data that gets updated. Depending on your use case, these updates could be as frequent as hourly to probably daily or weekly updates. You may also need to run analytics over the most up-to-date view, historical view containing all the updates or even just the latest increments.
 
 Very often this leads to having separate systems for stream and batch processing. The former handling incremental data while the latter deals with historical data.
 
@@ -28,8 +28,6 @@ Part one will introduce the core Hudi concepts and working with Copy on Write ta
 - [Core Hudi concepts](#core-hudi-concepts)
 - [Initial Setup and Dependencies](#initial-setup-and-dependencies)
 - [Working with CoW tables](#working-with-cow-tables)
-- [Selecting Records](#monitoring-your-docker-container) 
-- [Deleting Records](#monitoring-your-docker-container) 
 
 ## [Perquisites and framework versions](#perquisites-and-framework-versions)
 Prior knowledge of writing spark jobs in scala and reading and writing parquet files would make following this post a breeze.
@@ -48,7 +46,7 @@ Let's start off with some of the core concepts that need to be understood.
 ### Types of Tables
 Hudi supports two types of tables
  1. __Copy on Write (CoW):__ 
-When writing to a CoW tables, the __*Insert-Compact-Overwrite*__ cycle is run. Data in CoW tables will always be up-to-date with the latest records after every write operation. This mode is preferred for use cases that need to read the most up-to-date data as quickly as possible. Data is exclusively stored in the columnar file format (parquet) in CoW tables. Since every write operation involves compaction and overwrite, this mode produces the smallest files. 
+When writing to a CoW table, the __*Ingest-Reconcile-Compact-Purge*__ cycle is run. Data in CoW tables will always be up-to-date with the latest records after every write operation. This mode is preferred for use cases that need to read the most up-to-date data as quickly as possible. Data is exclusively stored in the columnar file format (parquet) in CoW tables. Since every write operation involves compaction and overwrite, this mode produces the smallest files. 
 
  2. __Merge on Read (MoR):__ MoR tables are focused on fast write operations. Writing to these tables creates delta files which are later compacted to produce the up-to-date data on reading. The compaction operation may be done synchronously or asynchronously. Data is stored in a combination of columnar file format (parquet) as well as row based file format (avro).
 
@@ -71,7 +69,7 @@ Hudi supports two main types of queries, __"Snapshot Queries"__ and __"Increment
  3. __Read Optimized Queries:__ For MoR tables, read optimized queries return a view which only contains the data in the base files without merging delta files.
 
 
-### Important properties when writing a Dataframe in Hudi format
+### Important properties when writing out a Dataframe in Hudi format
  - `hoodie.datasource.write.table.type` - This defines the table type, the default value is `COPY_ON_WRITE`. For a MoR table, set this value to `MERGE_ON_READ`. 
 
  - `hoodie.table.name` - This is a mandatory filed, every table you write should have a unique name.
@@ -86,7 +84,7 @@ Hudi supports two main types of queries, __"Snapshot Queries"__ and __"Increment
 ## [Initial Setup and Dependencies](#initial-setup-and-dependencies)
   
 ### Declaring the dependencies 
-In order to use Hudi with your Spark jobs you'll need the `spark-sql`, `hudi-spark-bundle` and `spark-avro` dependencies. Additionally you'll need to configure spark to use the `KryoSerializer`.
+In order to use Hudi with your Spark jobs you'll need the `spark-sql`, `hudi-spark-bundle` and `spark-avro` dependencies. Additionally you'll need to configure Spark to use the `KryoSerializer`.
 
 Here a snippet of the `pom.xml`
 {% highlight xml linenos %}
@@ -171,7 +169,7 @@ val spark: SparkSession = SparkSession.builder()
 In this section we'll go over writing, reading and deleting records when working with CoW tables.
 
 ### Base path & Upsert method
-Define a `basePath` where the table will be written and an `upsert` method. The method will write the `Dataframe` in the `org.apache.hudi` format. Notice all the Hudi properties that were discussed above have been set.
+Let's define a `basePath` where the table will be written and an `upsert` method. The method will write the `Dataframe` in the `org.apache.hudi` format. Notice all the Hudi properties that were discussed above have been set.
 
 {% highlight scala linenos %}
 val basePath = "/tmp/store"
@@ -184,13 +182,17 @@ private def upsert(albumDf: DataFrame, tableName: String, key: String, combineKe
       .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, combineKey)
       .option(HoodieWriteConfig.TABLE_NAME, tableName)
       .option(DataSourceWriteOptions.OPERATION_OPT_KEY, DataSourceWriteOptions.UPSERT_OPERATION_OPT_VAL)
+      // Ignore this property for now, the default is too high when experimenting on your local machine
+      // Set this to a lower value to improve performance.
+      // I'll probably cover Hudi tuning in a separate post.
+      .option("hoodie.upsert.shuffle.parallelism", "2")
       .mode(SaveMode.Append)
       .save(s"$basePath/$tableName/")
   }
 {% endhighlight %}
 
 ### Initial Upsert
-Insert `INITIAL_ALBUM_DATA`, we should have 2 records created and for `801`,the records with date `2019-12-03`.
+Insert `INITIAL_ALBUM_DATA`, we should have 2 records created and for `801`,the record with date `2019-12-03`.
 {% highlight scala linenos %}
 val tableName = "Album"
 upsert(INITIAL_ALBUM_DATA.toDF(), tableName, "albumId", "updateDate")
@@ -292,6 +294,7 @@ df.write.format("hudi")
 spark.read.format("hudi").load(s"$basePath/$tableName/*").show()
 {% endhighlight %}
 
+This is all we'll cover in this post, in Part 2 we'll explore working with Merge on Read tables.
 
 ## References
 1. [Hudi upsert hangs #1328][hudi-issue]
