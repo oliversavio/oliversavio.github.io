@@ -21,7 +21,9 @@ A common workflow to maintain incremental updates when working with data stored 
 
 Here's where a framework like Apache Hudi comes into play. It manages this workflow for us under the hood which leads to our core application code being a lot cleaner. Hudi supports queries over the most up-to-date view of the data as well as incremental changes at a point in time.
 
-This post will introduce the core Hudi concepts and working with Copy on Write tables.
+This post will introduce the core Hudi concepts and working with Copy on Write tables. 
+
+You may follow along with the source code [here][source-code] 
 
 ## Outline
 - [Prerequisites and framework versions](#prerequisites-and-framework-versions)
@@ -301,6 +303,7 @@ This is all that this part covers. In Part 2 we'll explore working with Merge on
 2. [Hudi Documentation][hudi-documentation]
 3. [Hoodie: An Open Source Incremental Processing Framework From Uber][hudi-youtube]
 4. [Hive four step strategy][hive-four-step-strategy]
+5. [Source Code for snippets in this post][source-code]
 
 
 
@@ -309,3 +312,4 @@ This is all that this part covers. In Part 2 we'll explore working with Merge on
 [hudi-documentation]: https://hudi.apache.org/docs/quick-start-guide.html
 [hudi-youtube]: https://www.youtube.com/watch?v=7Wudjc-v7CA
 [hive-four-step-strategy]: https://community.cloudera.com/t5/Community-Articles/FOUR-STEP-STRATEGY-FOR-INCREMENTAL-UPDATES-IN-APACHE-HIVE-ON/ta-p/246015 
+[source-code]: https://github.com/oliversavio/hudi-data-lake-example
