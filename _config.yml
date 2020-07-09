@@ -22,7 +22,7 @@ description: I blog about things I've learnt and hope to revisit in the future.
 navbar-links:
   About Me: "aboutme"
   Support Me:
-    - Buy me a beer: "https://www.instamojo.com/@oliver_savio/l9ce300019ebe43c492a2deb95dfa5fc7/"
+    - Buy me a beer: "supportme"
     - Books I Recommend: "books"
 
 # Image to show in the navigation bar - image must be a square (width = height)
