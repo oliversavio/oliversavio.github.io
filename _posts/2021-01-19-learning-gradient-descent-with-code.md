@@ -3,6 +3,7 @@ layout: post
 title: Learning gradient descent with code (Go)
 tags: [go, golang, ml]
 subtitle: Understanding the gradient descent algorithm with Go code.
+katex: yes
 --- 
 
 Gradient Descent is one of the most basic and fundamental algorithms in machine learning. In this post I'll attempt to explain how the algorithm works with Go code.
@@ -72,6 +73,10 @@ func costFunction(actuals []float64, predictions []float64) float64 {
 
 
 ### Source Code
+
+\\[
+    \binom{n}{k} = \frac{n!}{k!(n-k)!}
+\\]
 
 
 
