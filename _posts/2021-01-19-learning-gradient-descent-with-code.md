@@ -58,6 +58,10 @@ We need a way to measure how good or bad values of "m" and "c" are, to do this w
 
 We'll use the mean squared error (MSE) loss function, which is the mean of squared difference between predicted and actual values.
 
+\\[
+  \frac{1}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)^2
+\\]
+
 {% highlight golang linenos %}
 // MSE or Mean Squared Error
 func costFunction(actuals []float64, predictions []float64) float64 {
@@ -71,22 +75,29 @@ func costFunction(actuals []float64, predictions []float64) float64 {
 }
 {% endhighlight %}
 
+### Calculating the gradients
+Our object with gradient descent is to minimize the loss (or cost) function.
 
-### Source Code
+![Gradient Descent]({{ site.url }}/img/gradient_descent_demystified.png)
 
-\\[
+_[Image Source][gd-demystified]_
+
+The image above represents the graph of a loss (or cost) function. In order to know how to move to the bottom of the curve from any given point on the curve, we calculate the slope (or derivate or gradient) at that point. 
+
+
+\\(
     \binom{n}{k} = \frac{n!}{k!(n-k)!}
-\\]
+\\)
 
 
 
 
 ## References and Further Reading
-1. [UDFs — User-Defined Functions - Jacek Laskowski][udf-ref]
+1. [Gradient Descent Image Source][gd-demystified]
 2. [User-defined functions Scala - Databricks][udf-scala]
 
 
 
-[dataset-transform]: {% post_url 2019-09-25-how-to-transform-a-spark-dataset %}
+[gd-demystified]: https://ml-cheatsheet.readthedocs.io/en/latest/gradient_descent.html
 [udf-ref]: https://jaceklaskowski.gitbooks.io/mastering-spark-sql/spark-sql-udfs.html 
 [udf-scala]: https://docs.databricks.com/spark/latest/spark-sql/udf-scala.html 
