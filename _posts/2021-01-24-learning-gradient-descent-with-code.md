@@ -68,7 +68,10 @@ We need a way to measure how good or bad values of `m` and `c` are. To do this w
 We'll use the mean squared error (MSE) loss function, which is the mean of squared difference between predicted and actual values.
 
 \\[
-  J = \frac{1}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)^2 \text{ where n is the size of the input}
+J = \frac{1}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)^2 
+\\]
+\\[
+\text{ where n is the size of the input}
 \\]
 
 {% highlight golang linenos %}
