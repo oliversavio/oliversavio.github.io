@@ -1,17 +1,17 @@
 ---
 layout: post
 title: Demystifying gradient descent with code (Go)
-tags: [go, golang, machine learning]
+tags: [go, golang, machine learning, gradient descent, algorithm]
 subtitle: Understanding the gradient descent algorithm with Go code.
 katex: yes
 --- 
 
 Gradient Descent is one of the most basic and fundamental algorithms in machine learning. In this post I'll attempt to explain how the algorithm works with Go code.
 
-If you are completely new to the gradient descent algorithm, I'd suggest watching the [Linear Regression with One Variable][ng-gd-vid] series of videos by Andrew Ng, he goes in great depth to explain the theory behind the algorithm.
+If you are completely new to the gradient descent algorithm, I'd suggest watching the [Linear Regression with One Variable][ng-gd-vid] series of videos by Andrew Ng, he explains the theory behind the algorithm in great depth.
 
 ### Motivation
-If you're a programmer like me, mathematical equations may not be intuitive and may even feel intimidating. I find that, converting those equations to code helps me grasp them better and make them seem not as intimidating as before.
+If you're a programmer like me, mathematical equations may not be intuitive and may even feel intimidating. I find that converting those equations to code helps me grasp them better and make them seem not as intimidating as before.
 
 Gradient descent is one of the most fundamental algorithms used to find optimal parameters of machine learning models. In practice, you may rarely need to implement gradient descent on your own, however understanding how it works will help you better train complex ML models.
 
@@ -28,7 +28,7 @@ To get started, I've randomly generated points which approximately fall along a 
 
 {% endhighlight %}
 
-Think of this as, our model needs to predict the value `y` given an input feature `x`. In order to do this we need to find the best values for `m` and `c`.
+Think of this as, our model needs to predict the value `y` given an input feature `x`. In order to do this we need to find the best values for `m` and `c` to fit the given sample values of `x` and `y`.
 
 This is where the gradient descent algorithm comes in, we'll use it to find the best possible values for `m` and `c`.
 
@@ -36,7 +36,6 @@ This is where the gradient descent algorithm comes in, we'll use it to find the 
 
 ### The algorithm
 ![GD_algo]({{ site.url }}/img/gd_algo.png)
-
 ### The model
 Let's start by defining our model with a function.
 
@@ -64,12 +63,12 @@ func f(x []float64, p *params) []float64 {
 {% endhighlight %}
 
 ### The loss function
-We need a way to measure how good or bad values of `m` and `c` are, to do this we need to define a loss function.
+We need a way to measure how good or bad values of `m` and `c` are. To do this we need to define a loss function `J`.
 
 We'll use the mean squared error (MSE) loss function, which is the mean of squared difference between predicted and actual values.
 
 \\[
-  \frac{1}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)^2 \text{ where n is the size of the input}
+  J = \frac{1}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)^2 \text{ where n is the size of the input}
 \\]
 
 {% highlight golang linenos %}
@@ -92,16 +91,16 @@ Our objective with gradient descent is to minimize the loss (or cost) function.
 
 _[Image Source][gd-demystified]_
 
-The image above represents the graph of a loss (or cost) function with a single parameter `w`. In order to know the direction to move to get to the bottom of the curve, we calculate the gradient (or derivate or slope) at that point. 
+The image above represents the graph of a loss (or cost) function with a single parameter `w`. In order to know the direction to move in to get to the bottom of the curve, we calculate the gradient (or derivate or slope) at that point. 
 
-For our loss function defined above, since we have two parameters, we have to compute the partial derivate w.r.t `m` and the partial derivate w.r.t `c`. The final values come out to be.
+For our loss function `J` defined above, since we have two parameters, we have to compute the partial derivate w.r.t `m` and the partial derivate w.r.t `c`. The final values come out to be:
 
 \\[
-  \frac{\partial}{\partial m} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big) * x[i]
+  \frac{\partial J}{\partial m} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big) * x[i]
 \\]
 
 \\[
-  \frac{\partial}{\partial c} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)
+  \frac{\partial J}{\partial c} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)
 \\]
 
 {% highlight go linenos %}
@@ -124,7 +123,7 @@ func calcGradientC(predicted []float64) float64 {
 
 
 ### Updating the parameters
-Once we know in which direct to move along the curve, we need to decide how big a step we need to take. Taking too big or too small a step will case problems, to know more please refer to Andrew Ng's videos above which gives an in-depth explanation. 
+Once we know in which direct to move along the curve, we need to decide how big a step we need to take. Taking too big or too small a step will cause problems- to know more please refer to Andrew Ng's videos above which gives an in-depth explanation. 
 
 The amount we step is controlled by the learning rate (LR).
 
@@ -186,7 +185,7 @@ func main() {
 }
 {% endhighlight %}
 
-Running this gives me the following results
+Running this gives me the following results:
 {% highlight text linenos %}
 Loss: 1.034384 m: 0.918892 c:0.231507
 Loss: 0.956183 m: 0.928337 c:0.231757
@@ -205,7 +204,7 @@ Loss: 0.852387 m: 0.956307 c:0.228197
 Loss: 0.852117 m: 0.956573 c:0.227743
 {% endhighlight %}
 
-Plugging in the last values of `m` and `c` and graphing the resultant line along with the actual values give us this result.
+Plugging in the last values of `m` and `c` and plotting the resultant line on a graph along with the actual values give us this result.
 
 ![Gradient_Descent]({{ site.url }}/img/gd_2.png)
 
@@ -213,11 +212,12 @@ Plugging in the last values of `m` and `c` and graphing the resultant line along
 All the source code can be found on [Github][github].
 
 ## References and Further Reading
-1. [Gradient Descent Image Source][gd-demystified]
-2. [Machine Learning MOOC by Andrew Ng][ng-gd-vid]
-
+1. [Machine Learning MOOC by Andrew Ng][ng-gd-vid]
+2. [Introduction to Derivatives by Khan Academy][derivative-khan-academy]
+3. [Gradient Descent Image Source][gd-demystified]
 
 [gd-demystified]: https://ml-cheatsheet.readthedocs.io/en/latest/gradient_descent.html
 [ng-gd-vid]: https://www.coursera.org/learn/machine-learning
 [github]: https://github.com/oliversavio/learn-ml-with-code/tree/main/gradient_descent
+[derivative-khan-academy]: https://www.khanacademy.org/math/differential-calculus/dc-diff-intro
 
