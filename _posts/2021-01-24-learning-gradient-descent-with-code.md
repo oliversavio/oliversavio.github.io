@@ -99,7 +99,7 @@ The image above represents the graph of a loss (or cost) function with a single 
 For our loss function `J` defined above, since we have two parameters, we have to compute the partial derivate w.r.t `m` and the partial derivate w.r.t `c`. The final values come out to be:
 
 \\[
-  \frac{\partial J}{\partial m} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big) * x[i]
+  \frac{\partial J}{\partial m} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)x[i]
 \\]
 
 \\[
@@ -126,7 +126,7 @@ func calcGradientC(predicted []float64) float64 {
 
 
 ### Updating the parameters
-Once we know in which direct to move along the curve, we need to decide how big a step we need to take. Taking too big or too small a step will cause problems- to know more please refer to Andrew Ng's videos above which gives an in-depth explanation. 
+Once we know in which direction to move along the curve, we need to decide how big a step we need to take. Taking too big or too small a step will cause problems- to know more please refer to Andrew Ng's videos above which gives an in-depth explanation. 
 
 The amount we step is controlled by the learning rate (LR).
 
