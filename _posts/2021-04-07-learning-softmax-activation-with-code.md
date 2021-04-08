@@ -32,183 +32,122 @@ E.g.
 \\]
 
 ## The code
+Let's jump right in with the code.
 
-### The model
+We'll be extending the concepts explained in my previous post of "Demystfying" with matrix operations,
+considering an oversimplified nerual network with a single linear layer. This should give you the intitution 
+of what the activations look like with and without using the softmax layer.
 
-Let's start by defining our model with a function.
+
+_Note: We'll be using the `gonum` library to represet our matrices and perform operations on them._
+
+### Linear Layer
+Let's code out the simple linear layer. In keeping with the conventions from the previous post, we'll use `m`, `x` and `c` to represent our weights, inputs and biases.
+
+To keeps things simple, we'll assume we have only 3 classes which need to be predicted, hence our output matrix should have a dimension of `3x1`.
+Accordingly well assume `m` to have dimensions `3x3` and `c` to have `3x1`.
+
+E.g. `mx + c`
 
 \\[
-  f(x) = mx + c
+    \begin{bmatrix} 5 & 3 & 5 \\\ 3 & 7 & 0 \\\ 1 & 2 & 5 \end{bmatrix} \begin{bmatrix} 1 \\\ 2  \\\ 1 \end{bmatrix}
+    + \begin{bmatrix} 1 \\\ 1 \\\ 1 \end{bmatrix}
+    =
+    \begin{bmatrix} 17 \\\ 18  \\\ 11 \end{bmatrix}
 \\]
+
 
 {% highlight go linenos %}
-var input_x = []float64{0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 15., 16., 17., 18., 19.}
-var actuals = []float64{-0.4257, -0.3371, 1.8067, 3.6526, 4.0358, 5.1206, 5.1943, 6.7924, 7.0681, 7.4090, 8.8640, 10.4774, 11.4812, 11.4987, 12.0733, 15.1279, 17.0229, 16.4442, 18.7043, 19.7099}
+import "gonum.org/v1/gonum/mat"
 
-type params struct {
-	m float64
-	c float64
+func initRandomMatrix(row int, col int) *mat.Dense {
+    size := row * col
+    arr := make([]float64, size)
+    for i := range arr {
+        arr[i] = rand.NormFloat64()
+    }
+
+    return mat.NewDense(row, col, arr)
 }
 
-// Equation for a straight line i.e y = mx + c or y = mx + b
-func f(x []float64, p *params) []float64 {
-	var result []float64
-	for _, val := range x {
-		y := p.m*val + p.c
-		result = append(result, y)
-	}
-	return result
-{% endhighlight %}
+func linear() *mat.Dense {
+    m := initRandomMatrix(3, 3)
+    x := initRandomMatrix(3, 1)
+    c := initRandomMatrix(3, 1)
 
-### The loss function
-We need a way to measure how good or bad values of `m` and `c` are. To do this we need to define a loss function `J`.
-
-We'll use the mean squared error (MSE) loss function, which is the mean of squared difference between predicted and actual values.
-
-\\[
-J = \frac{1}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)^2 
-\\]
-\\[
-\text{ where n is the size of the input}
-\\]
-
-{% highlight golang linenos %}
-// MSE or Mean Squared Error
-func costFunction(predictions []float64) float64 {
-	var diff float64
-	for i := range actuals {
-		d := predictions[i] - actuals[i]
-		diff += math.Pow(d, 2.0)
-	}
-	loss := diff / float64(len(actuals))
-	return loss
+    ll := mat.NewDense(3, 1, nil)
+    ll.Mul(m, x)
+    ll.Add(ll, c)
+    
+    return ll
 }
+
 {% endhighlight %}
+`initRandomMatrix` is a helper method to initialize a matrix with random values.
 
-### Calculating the gradients
-Our objective with gradient descent is to minimize the loss (or cost) function.
-
-![Gradient Descent]({{ site.url }}/img/gradient_descent_demystified.png)
-
-_[Image Source][gd-demystified]_
-
-The image above represents the graph of a loss (or cost) function with a single parameter `w`. In order to know the direction to move in to get to the bottom of the curve, we calculate the gradient (or derivate or slope) at that point. 
-
-For our loss function `J` defined above, since we have two parameters, we have to compute the partial derivate w.r.t `m` and the partial derivate w.r.t `c`. The final values come out to be:
-
-\\[
-  \frac{\partial J}{\partial m} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)x[i]
-\\]
-
-\\[
-  \frac{\partial J}{\partial c} = \frac{2}{n}\displaystyle\sum_{i=0}^{n-1} \big(f(x[i]) - y[i] \big)
-\\]
+### Softmax Function
 
 {% highlight go linenos %}
-func calcGradientM(predicted []float64) float64 {
-	var diff float64
-	for i, x := range input_x {
-		diff += (predicted[i] - actuals[i]) * x
-	}
-	return (diff / float64(len(input_x))) * 2
+import "gonum.org/v1/gonum/mat"
+
+func softmax(matrix *mat.Dense) *mat.Dense {
+    var sum float64
+    // Calculate the sum
+    for _, v := range matrix.RawMatrix().Data {
+	    sum += math.Exp(v)
+    }
+
+    resultMatrix := mat.NewDense(matrix.RawMatrix().Rows, matrix.RawMatrix().Cols, nil)
+    // Calculate softmax value for each element
+    resultMatrix.Apply(func(i int, j int, v float64) float64 {
+	    return math.Exp(v) / sum
+    }, matrix)
+
+    return resultMatrix
 }
 
-func calcGradientC(predicted []float64) float64 {
-	var diff float64
-	for i := range actuals {
-		diff += (predicted[i] - actuals[i])
-	}
-	return (diff / float64(len(actuals))) * 2
-}
 {% endhighlight %}
 
+As you can see from the code above, the `softmax` function is pretty straight forward.
 
-### Updating the parameters
-Once we know in which direction to move along the curve, we need to decide how big a step we need to take. Taking too big or too small a step will cause problems- to know more please refer to Andrew Ng's videos above which gives an in-depth explanation. 
-
-The amount we step is controlled by the learning rate (LR).
-
-\\[
-  m_{new} = m_{old} - LR * \text{ Gradient of m}
-\\]
-\\[
-  c_{new} = c_{old} - LR * \text{ Gradient of c}
-\\]
-
-{% highlight go linenos %}
-const lr = 1e-3
-func updateParams(p *params, gradientM float64, gradientC float64) {
-	p.m -= lr * gradientM
-	p.c -= lr * gradientC
-}
-{% endhighlight %}
 
 ### Putting it all together
-In machine learning, an epoch is defined as one iteration of training though the dataset. Here we'll set `epochs = 15` and a learning rate of `1e-3`. We then initialize the parameter with random values and start training.
-
-_Note: `rand.Seed(7.0)` is used to get reproducible results._
+Here `SimpleNN()` is an oversimplified representation of a neural network with a single linear layer and `SoftMaxNN()` is the network with the softmax layer.
 {% highlight go linenos %}
-const (
-	lr     = 1e-3
-	epochs = 15
-)
-
-func calculateLoss(x []float64, p *params) (loss float64, predicted []float64) {
-	predicted = f(x, p)
-	loss = costFunction(predicted)
-	return
-}
-
-func calculateGradients(predicted []float64) (gradM float64, gradC float64) {
-	gradM = calcGradientM(predicted)
-	gradC = calcGradientC(predicted)
-	return
-}
-
-func fit(p *params) {
-	loss, preds := calculateLoss(input_x, p)
-	fmt.Printf("Loss: %f m: %f c:%f", loss, p.m, p.c)
-	fmt.Println()
-	gradM, gradC := calculateGradients(preds)
-	updateParams(p, gradM, gradC)
-}
-
-func train(p *params, epochs int) {
-	for i := 0; i < epochs; i++ {
-		fit(p)
-	}
-}
-
 func main() {
-	rand.Seed(7.0)
-	p := &params{m: rand.Float64(), c: rand.Float64()}
-	train(p, epochs)
+	rand.Seed(350) // For reproduceable results
+	fmt.Println()
+
+	SimpleNN()
+	SoftmaxNN()
 }
+
+func SimpleNN() {
+	nn := linear()
+	fmt.Println("Activation after linear layer")
+	fmt.Println(mat.Formatted(nn))
+}
+
+func SoftmaxNN() {
+	nn := linear()
+	nnsmax := softmax(nn)
+
+	fmt.Println("Activation after softmax layer")
+	fmt.Println(mat.Formatted(nnsmax))
+}
+
+
 {% endhighlight %}
+### Output
+*Activations after linear layer*
+\\[
+    \begin{bmatrix} 0.842 \\\ 0.042 \\\ 0.002 \\\ 0.114 \end{bmatrix}
+\\]
 
-Running this gives me the following results:
-{% highlight text linenos %}
-Loss: 1.034384 m: 0.918892 c:0.231507
-Loss: 0.956183 m: 0.928337 c:0.231757
-Loss: 0.911916 m: 0.935444 c:0.231827
-Loss: 0.886815 m: 0.940794 c:0.231762
-Loss: 0.872540 m: 0.944824 c:0.231596
-Loss: 0.864379 m: 0.947862 c:0.231353
-Loss: 0.859671 m: 0.950154 c:0.231053
-Loss: 0.856914 m: 0.951885 c:0.230710
-Loss: 0.855259 m: 0.953196 c:0.230335
-Loss: 0.854226 m: 0.954190 c:0.229935
-Loss: 0.853545 m: 0.954946 c:0.229518
-Loss: 0.853063 m: 0.955523 c:0.229087
-Loss: 0.852693 m: 0.955965 c:0.228646
-Loss: 0.852387 m: 0.956307 c:0.228197
-Loss: 0.852117 m: 0.956573 c:0.227743
-{% endhighlight %}
-
-Plugging in the last values of `m` and `c` and plotting the resultant line on a graph along with the actual values give us this result.
-
-![Gradient_Descent]({{ site.url }}/img/gd_2.png)
-
+*Activations after softmax layer*
+\\[
+    \begin{bmatrix} 0.842 \\\ 0.042 \\\ 0.002 \\\ 0.114 \end{bmatrix}
+\\]
 ## Source Code
 All the source code can be found on [Github][github].
 
