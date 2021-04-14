@@ -12,15 +12,14 @@ The softmax activation function is commonly used as the output layer in a neural
 
 _[Image Source][nn-img-src]_
 
-**Note: These code examples are for educational purposes only and are in no way intended to be used in production.**
 ## The Math
-Mathematically the softmax function is represented as follows.
+Mathematically, the softmax function is represented as follows.
 
 \\[
  \Large\sigma(z_i) = \huge\frac{e^{z_i}}{\sum_{j=1}^{K}e^{z_j}} 
 \\]
 
-*For i = 1,...,K and K is the number of distinct classes to be predicted, z denotes the input vector.*
+*For i = 1,...,K, K is the number of distinct classes to be predicted and z denotes the input vector.*
 
 For e.g.
 \\[
@@ -41,7 +40,7 @@ It can be hard to interpret activation with negative values, taking the exponent
 ### Amplify small differences between activations
 Taking the exponent also serves to amplify the difference between activations, this assists in picking one class over another.
 
-### Generates a valid probability distribution
+### Generate a valid probability distribution
 Once we have positive values, normalizing across these values will generate activation between 0 and 1 which sum up to 1 and may be interpreted as probabilities.
 
 #### Examples
@@ -52,7 +51,7 @@ following activations.
 \\[
     \begin{bmatrix} -0.1849 \\\ 3.1026 \\\ 1.7967 \end{bmatrix}
 \\]
-It's isn't clear which class the input likely belongs to, let's try to fix this by normalizing.
+It isn't clear which class the input likely belongs to, let's try to fix this by normalizing.
 
 \\[
     \begin{bmatrix} -0.1849 \\\ 3.1026 \\\ 1.7967 \end{bmatrix}
@@ -67,10 +66,13 @@ Finally, after applying the softmax function we end up with
 \\[
     \begin{bmatrix} 0.0285 \\\ 0.7643 \\\ 0.2070 \end{bmatrix}
 \\]
+
 ## The code
+**Note: These code examples are for educational purposes only and are in no way intended to be used in production.**
+
 We'll be extending the concepts explained in my previous post on "[Gradient descent with code][old-post]" with matrix operations,
-considering an oversimplified nerual network with a single linear layer. This should give you the intitution 
-of what the activations look like with and without using the softmax layer.
+considering an oversimplified neural network with a single linear layer. This should give you the intuition 
+of what the activations look like, with and without using the softmax layer.
 
 
 _Note: We'll be using the `gonum` library to represet our matrices and perform operations on them._
@@ -188,9 +190,11 @@ All the source code can be found on [Github][github].
 ## References and Further Reading
 1. [Multi-Class Neural Networks: Softmax][multi-class-nn-google]
 2. [Mathematical intuition for how the softmax activation function works][how-sm-works]
+3. [Gonum Numerical Packages][go-num]
 
 [old-post]: {% post_url 2021-01-24-learning-gradient-descent-with-code %}
 [github]: https://github.com/oliversavio/learn-ml-with-code/tree/main/softmax_classification
 [nn-img-src]: https://developers.google.com/machine-learning/crash-course/images/SoftmaxLayer.svg 
 [multi-class-nn-google]: https://developers.google.com/machine-learning/crash-course/multi-class-neural-networks/softmax
 [how-sm-works]: https://www.machinecurve.com/index.php/2020/01/08/how-does-the-softmax-activation-function-work/
+[go-num]: https://www.gonum.org/
