@@ -7,7 +7,7 @@ katex: yes
 share-img: /img/nn.png
 --- 
 
-The softmax activation function is commonly used as the output layer in a neural networks.
+The softmax activation function is commonly used as the output layer in a neural network.
 
 ![Neural Network]({{ site.url }}/img/nn.png)
 
