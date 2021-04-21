@@ -4,6 +4,7 @@ title: Demystifying gradient descent with code (Go)
 tags: [go, golang, machine learning, gradient descent, algorithm]
 subtitle: Understanding the gradient descent algorithm with Go code.
 katex: yes
+share-img: /img/gd_algo.png
 --- 
 
 Gradient Descent is one of the most basic and fundamental algorithms in machine learning. In this post I'll attempt to explain how the algorithm works with Go code.
