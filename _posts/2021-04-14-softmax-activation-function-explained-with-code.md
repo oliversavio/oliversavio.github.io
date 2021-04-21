@@ -4,6 +4,7 @@ title: Softmax activation function explained with code (Go)
 tags: [go, golang, machine learning, softmax, neural networks]
 subtitle: Understanding why and how to use the softmax activation function
 katex: yes
+share-img: /img/nn.png
 --- 
 
 The softmax activation function is commonly used as the output layer in a neural networks.
